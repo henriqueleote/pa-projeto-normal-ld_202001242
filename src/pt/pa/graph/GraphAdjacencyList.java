@@ -21,10 +21,11 @@ public class GraphAdjacencyList<V,E> implements Graph<V, E>{
         int count = 0;
 
         for (Vertex<V> i:vertices.values()) {
-            MyVertex myU = new MyVertex(i.element());
-            for (Edge<E,V> k:myU.incidentEdges) {
+            MyVertex myU = checkVertex(i);
+            count += myU.incidentEdges.size();
+            /*for (Edge<E,V> k:myU.incidentEdges) {
                 count++;
-            }
+            }*/
         }
         return count/2;
     }
