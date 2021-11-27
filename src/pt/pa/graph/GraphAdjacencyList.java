@@ -1,0 +1,270 @@
+package pt.pa.graph;
+
+import java.util.*;
+
+public class GraphAdjacencyList<V,E> implements Graph<V, E>{
+
+    private Map<V, Vertex<V>> vertices;
+
+
+    public GraphAdjacencyList() {
+        this.vertices = new HashMap<>();
+    }
+
+    @Override
+    public int numVertices() {
+        return vertices.size();
+    }
+
+    @Override
+    public int numEdges() {
+        int count = 0;
+
+        for (Vertex<V> i:vertices.values()) {
+            MyVertex myU = new MyVertex(i.element());
+            for (Edge<E,V> k:myU.incidentEdges) {
+                count++;
+            }
+        }
+        return count/2;
+    }
+
+    @Override
+    public Collection<Vertex<V>> vertices() {
+        List<Vertex<V>> vertexList = new ArrayList<>(vertices.values());
+        return vertexList;
+    }
+
+    @Override
+    public Collection<Edge<E, V>> edges() {
+        List<Edge<E,V>> edgeList = new ArrayList<>();
+        for (Vertex<V> i:vertices.values()) {
+            MyVertex myU = new MyVertex(i.element());
+            for (Edge<E,V> k:myU.incidentEdges) {
+                if(!edgeList.contains(k))
+                    edgeList.add(k);
+            }
+        }
+        return edgeList;
+    }
+
+    @Override
+    public Collection<Edge<E, V>> incidentEdges(Vertex<V> v) throws InvalidVertexException {
+        MyVertex vertex = checkVertex(v);
+        return vertex.incidentEdges;
+    }
+
+    @Override
+    public Vertex<V> opposite(Vertex<V> v, Edge<E, V> e) throws InvalidVertexException, InvalidEdgeException {
+        MyVertex myV = checkVertex(v);
+        MyEdge myE = checkEdge(e);
+        for (Vertex<V> i:vertices.values()) {
+            MyVertex myU = new MyVertex(i.element());
+            if( myV.incidentEdges.contains(e) && myU.incidentEdges.contains(e))
+                return myU;
+        }
+        return null;
+    }
+
+    @Override
+    public boolean areAdjacent(Vertex<V> u, Vertex<V> v) throws InvalidVertexException {
+        MyVertex myU = checkVertex(u);
+        MyVertex myV = checkVertex(v);
+
+        //is there a common edge between myU.incidentEdges and myV.incidentEdges ?
+
+        Set<Edge<E,V>> intersection = new HashSet<>(myU.incidentEdges);
+        intersection.retainAll(myV.incidentEdges);
+
+        return !intersection.isEmpty();
+    }
+
+    @Override
+    public Vertex<V> insertVertex(V vElement) throws InvalidVertexException {
+        MyVertex v = new MyVertex(vElement);
+        vertices.put(vElement,v);
+        return v;
+    }
+
+    @Override
+    public Edge<E, V> insertEdge(Vertex<V> u, Vertex<V> v, E edgeElement) throws InvalidVertexException, InvalidEdgeException {
+        MyVertex myU = checkVertex(u);
+        MyVertex myV = checkVertex(v);
+        MyEdge e = new MyEdge(edgeElement);
+        myU.incidentEdges.add(e);
+        myV.incidentEdges.add(e);
+        return e;
+    }
+
+    @Override
+    public Edge<E, V> insertEdge(V vElement1, V vElement2, E edgeElement) throws InvalidVertexException, InvalidEdgeException {
+        MyVertex myU = null;
+        MyVertex myV = null;
+        MyEdge e = new MyEdge(edgeElement);
+        for (Vertex<V> i: vertices.values()) {
+            if(vElement1.equals(i.element()))
+                myU = new MyVertex(vElement1);
+            if(vElement2.equals(i.element()))
+                myV = new MyVertex(vElement2);
+        }
+        myU.incidentEdges.add(e);
+        myV.incidentEdges.add(e);
+        return e;
+    }
+
+    @Override
+    public V removeVertex(Vertex<V> v) throws InvalidVertexException {
+        MyVertex myV = checkVertex(v);
+        MyVertex myV1 = myV;
+        vertices.remove(myV);
+        return myV1.element;
+    }
+
+    @Override
+    public E removeEdge(Edge<E, V> e) throws InvalidEdgeException {
+        MyEdge myEdge = checkEdge(e);
+        for (Vertex<V> i:vertices.values()) {
+            MyVertex myU = new MyVertex(i.element());
+            for (Edge<E,V> k:myU.incidentEdges) {
+                if(k==e)
+                  myU.incidentEdges.remove(k);
+            }
+        }
+        return e.element();
+    }
+
+    @Override
+    public V replace(Vertex<V> v, V newElement) throws InvalidVertexException {
+        MyVertex myV = checkVertex(v);
+        vertices.replace(newElement,myV);
+/*   MyVertex myV1 = myV;
+        myV.element = newElement;
+
+        for (Vertex<V> i:vertices.values()) {
+            if(i.equals(myV))
+                i = myV;
+        }*/
+        return myV.element();
+    }
+
+    @Override
+    public E replace(Edge<E, V> e, E newElement) throws InvalidEdgeException {
+        MyEdge myEdge = checkEdge(e);
+        MyEdge myEdge1 = myEdge;
+        myEdge1.element = newElement;
+        for (Vertex<V> i:vertices.values()) {
+            MyVertex myU = new MyVertex(i.element());
+            for (Edge<E,V> k:myU.incidentEdges) {
+                if(k==e)
+                    k = myEdge1;
+            }
+        }
+        return myEdge.element;
+    }
+
+    private class MyVertex implements Vertex<V> {
+        private V element;
+        private List<Edge<E,V>> incidentEdges;
+
+        public MyVertex(V element) {
+            this.element = element;
+            this.incidentEdges = new ArrayList<>();
+        }
+
+        @Override
+        public V element() {
+            return element;
+        }
+
+        @Override
+        public String toString() {
+            return "Vertex{" + element + '}' + " --> " + incidentEdges.toString();
+        }
+    }
+
+    private class MyEdge implements Edge<E, V> {
+        private E element;
+
+        public MyEdge(E element) {
+            this.element = element;
+        }
+
+        @Override
+        public E element() {
+            return element;
+        }
+
+        @Override
+        public Vertex<V>[] vertices() {
+            //if the edge exists, then two existing vertices have the edge
+            //in their incidentEdges lists
+            List<Vertex<V>> adjacentVertices = new ArrayList<>();
+
+            for(Vertex<V> v : GraphAdjacencyList.this.vertices.values()) {
+                MyVertex myV = (MyVertex) v;
+
+                if( myV.incidentEdges.contains(this)) {
+                    adjacentVertices.add(v);
+                }
+            }
+
+            if(adjacentVertices.isEmpty()) {
+                return new Vertex[]{null, null}; //edge was removed meanwhile
+            } else {
+                return new Vertex[]{adjacentVertices.get(0), adjacentVertices.get(1)};
+            }
+        }
+
+        @Override
+        public String toString() {
+            return "Edge{" + element + "}";
+        }
+    }
+
+    private MyVertex checkVertex(Vertex<V> v) throws InvalidVertexException {
+        if(v == null) throw new InvalidVertexException("Null vertex.");
+
+        MyVertex vertex;
+        try {
+            vertex = (MyVertex) v;
+        } catch (ClassCastException e) {
+            throw new InvalidVertexException("Not a vertex.");
+        }
+
+        if (!vertices.containsValue(v)) {
+            throw new InvalidVertexException("Vertex does not belong to this graph.");
+        }
+
+        return vertex;
+    }
+
+    private MyEdge checkEdge(Edge<E, V> e) throws InvalidEdgeException {
+        if(e == null) throw new InvalidEdgeException("Null edge.");
+
+        MyEdge edge;
+        try {
+            edge = (MyEdge) e;
+        } catch (ClassCastException ex) {
+            throw new InvalidVertexException("Not an edge.");
+        }
+
+        if (!edges().contains(edge)) {
+            throw new InvalidEdgeException("Edge does not belong to this graph.");
+        }
+
+        return edge;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("Graph | Adjacency List : \n");
+
+        for(Vertex<V> v : vertices.values()) {
+            sb.append( String.format("%s", v) );
+            sb.append("\n");
+        }
+
+        return sb.toString();
+    }
+}
+
