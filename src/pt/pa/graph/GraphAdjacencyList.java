@@ -179,7 +179,7 @@ public class GraphAdjacencyList<V,E> implements Graph<V, E>{
 
         @Override
         public String toString() {
-            return "Vertex{" + element + '}' + " --> " + incidentEdges.toString();
+            return "Vertex{" + element + '}' + " --> " + incidentEdges.toString() + "\n";
         }
     }
 
