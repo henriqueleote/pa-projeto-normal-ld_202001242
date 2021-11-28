@@ -10,6 +10,15 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/* *****************************************************
+    PA 2021/2022 EN - Rede de Logistica
+
+    David Vaz - 201601644
+    Guilherme Oliveira - 202000719
+    Henrique Leote - 202001242
+    Venelin Arguirov - 202001104
+   ***************************************************** */
+
 class GraphAdjacencyListTest {
     GraphAdjacencyList<City, Distance> distances;
     Vertex<City> prague;
@@ -18,6 +27,15 @@ class GraphAdjacencyListTest {
     Vertex<City> newYork;
     Vertex<City> london;
     Vertex<City> helsinky;
+
+    Distance d1 = new Distance(10838);
+    Distance d2 = new Distance(11550);
+    Distance d3 = new Distance(1303);
+    Distance d4 = new Distance(5567);
+    Distance d5 = new Distance(1264);
+    Distance d6 = new Distance(7815);
+    Distance d7 = new Distance(1845);
+    Distance d8 = new Distance(8132);
     @BeforeEach
     void setUp() {
         distances = new GraphAdjacencyList<>();
@@ -31,14 +49,14 @@ class GraphAdjacencyListTest {
         helsinky = distances.insertVertex(new City("Helsinky", 0));
 
         //Arestas
-        distances.insertEdge(tokyo, newYork, new Distance(10838));
-        distances.insertEdge(beijing, newYork, new Distance(11550));
-        distances.insertEdge(beijing, tokyo, new Distance(1303));
-        distances.insertEdge(london, newYork, new Distance(5567));
-        distances.insertEdge(london, prague, new Distance(1264));
-        distances.insertEdge(helsinky, tokyo, new Distance(7815));
-        distances.insertEdge(prague, helsinky, new Distance(1845));
-        distances.insertEdge(beijing, london, new Distance(8132));
+        distances.insertEdge(tokyo, newYork, d1);
+        distances.insertEdge(beijing, newYork, d2);
+        distances.insertEdge(beijing, tokyo, d3);
+        distances.insertEdge(london, newYork, d4);
+        distances.insertEdge(london, prague, d5);
+        distances.insertEdge(helsinky, tokyo, d6);
+        distances.insertEdge(prague, helsinky, d7);
+        distances.insertEdge(beijing, london, d8);
     }
 
     @Test
@@ -79,22 +97,6 @@ class GraphAdjacencyListTest {
     }
 
     @Test
-    void insertVertex() {
-        Vertex<City> barreiro = distances.insertVertex(new City("Barreiro", 0));
-        assertTrue(distances.vertices().contains(barreiro));
-    }
-
-    @Test
-    void insertEdge1() {
-
-    }
-
-    @Test
-    void insertEdge2() {
-
-    }
-
-    @Test
     void removeVertex() {
         distances.removeVertex(newYork);
         assertFalse(distances.vertices().contains(newYork));
@@ -102,20 +104,34 @@ class GraphAdjacencyListTest {
 
     @Test
     void removeEdge() {
-
-
+        distances.removeEdge(distances.getEdgeFromVertex(tokyo, d1));
+        assertEquals(7,distances.edges().size());
     }
 
     @Test
     void replaceV() {
-
         City v1 = new City("OK", 5);
         distances.replace(prague,v1);
         assertTrue(prague.element()==v1);
-
     }
 
     @Test
     void replaceE() {
+        Distance d = new Distance(14151);
+        distances.replace(distances.getEdgeFromVertex(tokyo, d1),d);
+    }
+
+    @Test
+    void throwInvalidEdgeExceptionOnInsert(){
+        Vertex<City> lisbon = distances.insertVertex(new City("Lisbon",0));
+        Vertex<City> porto = distances.insertVertex(new City("Porto",0));
+        distances.insertEdge(lisbon,porto,new Distance(1000));
+        assertThrows(InvalidEdgeException.class, ()->distances.insertEdge(lisbon,porto,null));
+    }
+
+    @Test
+    void throwInvalidVertexExceptionOnInsert(){
+        Vertex<City> lisbon = distances.insertVertex(new City("Lisbon",0));
+        assertThrows(InvalidVertexException.class, ()->distances.insertVertex(null));
     }
 }

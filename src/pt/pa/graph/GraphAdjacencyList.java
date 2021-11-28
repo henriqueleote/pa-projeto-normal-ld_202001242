@@ -2,6 +2,16 @@ package pt.pa.graph;
 
 import java.util.*;
 
+/* *****************************************************
+    PA 2021/2022 EN - Rede de Logistica
+
+    David Vaz - 201601644
+    Guilherme Oliveira - 202000719
+    Henrique Leote - 202001242
+    Venelin Arguirov - 202001104
+   ***************************************************** */
+
+
 public class GraphAdjacencyList<V,E> implements Graph<V, E>{
 
     private Map<V, Vertex<V>> vertices;
@@ -127,10 +137,7 @@ public class GraphAdjacencyList<V,E> implements Graph<V, E>{
         MyEdge myEdge = checkEdge(e);
         for (Vertex<V> i:vertices.values()) {
             MyVertex myU = checkVertex(i);
-            for (Edge<E,V> k:myU.incidentEdges) {
-                if(k==e)
-                  myU.incidentEdges.remove(k);
-            }
+            myU.incidentEdges.removeIf(k -> k == e);
         }
         return e.element();
     }

@@ -13,6 +13,14 @@ import java.util.*;
 import java.util.stream.Collectors;
 import static java.lang.Integer.parseInt;
 
+/* *****************************************************
+    PA 2021/2022 EN - Rede de Logistica
+
+    David Vaz - 201601644
+    Guilherme Oliveira - 202000719
+    Henrique Leote - 202001242
+    Venelin Arguirov - 202001104
+   ***************************************************** */
 
 public class FileManager implements Serializable {
     private  Map<Integer, Integer> coordinatesList;
