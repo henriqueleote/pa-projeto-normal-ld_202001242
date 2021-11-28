@@ -23,9 +23,6 @@ public class GraphAdjacencyList<V,E> implements Graph<V, E>{
         for (Vertex<V> i:vertices.values()) {
             MyVertex myU = checkVertex(i);
             count += myU.incidentEdges.size();
-            /*for (Edge<E,V> k:myU.incidentEdges) {
-                count++;
-            }*/
         }
         return count/2;
     }
@@ -117,6 +114,15 @@ public class GraphAdjacencyList<V,E> implements Graph<V, E>{
     public V removeVertex(Vertex<V> v) throws InvalidVertexException {
         MyVertex myV = checkVertex(v);
         MyVertex myV1 = myV;
+
+        /*
+        Iterator inc = incidentEdges(v).iterator();
+        while (inc.hasNext()) {
+            MyEdge e = (MyEdge) inc.next();
+            if (e.location() != null)
+                removeEdge(e);
+        }
+        */
         vertices.remove(myV);
         return myV1.element;
     }

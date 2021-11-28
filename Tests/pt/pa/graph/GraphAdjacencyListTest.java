@@ -11,18 +11,26 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class GraphAdjacencyListTest {
-    GraphAdjacencyList<City, Distance> distances = new GraphAdjacencyList<>();
+    GraphAdjacencyList<City, Distance> distances;
+    Vertex<City> prague;
+    Vertex<City> tokyo;
+    Vertex<City> beijing;
+    Vertex<City> newYork;
+    Vertex<City> london;
+    Vertex<City> helsinky;
     @BeforeEach
     void setUp() {
+        distances = new GraphAdjacencyList<>();
 
+        //Vértices
+        prague = distances.insertVertex(new City("Prague", 0));
+        tokyo = distances.insertVertex(new City("Tokyo", 0));
+        beijing = distances.insertVertex(new City("Beijing", 0));
+        newYork = distances.insertVertex(new City("New York", 0));
+        london = distances.insertVertex(new City("London", 0));
+        helsinky = distances.insertVertex(new City("Helsinky", 0));
 
-        Vertex<City> prague = distances.insertVertex(new City("Prague", 0));
-        Vertex<City> tokyo = distances.insertVertex(new City("Tokyo", 0));
-        Vertex<City> beijing = distances.insertVertex(new City("Beijing", 0));
-        Vertex<City> newYork = distances.insertVertex(new City("New York", 0));
-        Vertex<City> london = distances.insertVertex(new City("London", 0));
-        Vertex<City> helsinky = distances.insertVertex(new City("Helsinky", 0));
-
+        //Arestas
         distances.insertEdge(tokyo, newYork, new Distance(10838));
         distances.insertEdge(beijing, newYork, new Distance(11550));
         distances.insertEdge(beijing, tokyo, new Distance(1303));
@@ -35,7 +43,7 @@ class GraphAdjacencyListTest {
 
     @Test
     void numVertices() {
-    assertEquals(6,distances.numVertices());
+        assertEquals(6,distances.numVertices());
     }
 
     @Test
@@ -45,52 +53,68 @@ class GraphAdjacencyListTest {
 
     @Test
     void vertices() {
-
-
+        assertEquals(6,distances.vertices().size());
     }
 
     @Test
     void edges() {
-
+        assertEquals(8,distances.edges().size());
     }
 
     @Test
     void incidentEdges() {
+        assertEquals(2,distances.incidentEdges(prague).size());
     }
 
     @Test
     void opposite() {
+        
     }
 
     @Test
     void areAdjacent() {
+        assertTrue(distances.areAdjacent(tokyo, newYork));
     }
 
     @Test
     void insertVertex() {
+        Vertex<City> barreiro = distances.insertVertex(new City("Barreiro", 0));
+        assertTrue(distances.vertices().contains(barreiro));
     }
 
     @Test
-    void insertEdge() {
+    void insertEdge1() {
+        //Edge<> e1 = new Edge<>();
+        //assertTrue(distances.edges().contains(e1));
     }
 
     @Test
-    void testInsertEdge() {
+    void insertEdge2() {
     }
 
     @Test
     void removeVertex() {
+        distances.removeVertex(prague);
+        assertFalse(distances.vertices().contains(prague));
     }
 
     @Test
     void removeEdge() {
+        //distances.removeEdge(cenas);
+        //assertFalse(distances.edges().contains(cenas));
     }
 
     @Test
-    void replace() {
+    void replaceV() {
+        /*
+        Vertex<City> v1;
+        distances.replace(prague, v1.element());
+        assertFalse(distances.vertices().contains(prague));
+        assertTrue(distances.vertices().contains(v1));
+         */
     }
 
     @Test
-    void testReplace() {
+    void replaceE() {
     }
 }
