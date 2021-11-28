@@ -117,9 +117,8 @@ public class GraphAdjacencyList<V,E> implements Graph<V, E>{
     @Override
     public V removeVertex(Vertex<V> v) throws InvalidVertexException {
         MyVertex myV = checkVertex(v);
-        MyVertex myV1 = myV;
-        vertices.remove(myV);
-        return myV1.element;
+        vertices.remove(myV.element);
+        return myV.element;
     }
 
     @Override
@@ -139,14 +138,14 @@ public class GraphAdjacencyList<V,E> implements Graph<V, E>{
     public V replace(Vertex<V> v, V newElement) throws InvalidVertexException {
         if(newElement==null) throw new InvalidVertexException("Vertex element is null");
         MyVertex myV = checkVertex(v);
-        vertices.replace(newElement,myV);
-/*   MyVertex myV1 = myV;
+       /*  vertices.replace(newElement,myV);*/
+       MyVertex myV1 = myV;
         myV.element = newElement;
 
         for (Vertex<V> i:vertices.values()) {
             if(i.equals(myV))
                 i = myV;
-        }*/
+        }
         return myV.element();
     }
 

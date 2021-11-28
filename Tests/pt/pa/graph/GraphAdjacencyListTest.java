@@ -94,8 +94,8 @@ class GraphAdjacencyListTest {
 
     @Test
     void removeVertex() {
-        distances.removeVertex(prague);
-        assertFalse(distances.vertices().contains(prague));
+        distances.removeVertex(newYork);
+        assertFalse(distances.vertices().contains(newYork));
     }
 
     @Test
@@ -106,12 +106,11 @@ class GraphAdjacencyListTest {
 
     @Test
     void replaceV() {
-        /*
-        Vertex<City> v1;
-        distances.replace(prague, v1.element());
-        assertFalse(distances.vertices().contains(prague));
-        assertTrue(distances.vertices().contains(v1));
-         */
+
+        City v1 = new City("OK", 5);
+        distances.replace(prague,v1);
+        assertTrue(prague.element()==v1);
+
     }
 
     @Test
