@@ -17,9 +17,7 @@ public class Route {
 
     @Override
     public String toString(){
-            return "Distance{" + "distance=" + route + '}';
-
-
+            return getRoute() + "";
     }
 
 }
