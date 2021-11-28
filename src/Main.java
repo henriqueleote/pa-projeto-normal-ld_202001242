@@ -47,23 +47,17 @@ public class Main extends Application {
             vertexArrayList.add(v);
             System.out.println("HUB: "+hubs.get(i).getName() + " " + hubs.get(i).getX() + " - " + hubs.get(i).getY());
         }
-        System.out.println(routes);
+
         Map<Integer, Edge<Route,Hub>> as = new HashMap<>();
         for(int j = 0; j < vertexArrayList.size(); j++){
             for(int i = j; i < routes.size(); i++) {
                 if ((Integer.compare(routes.get(j).get(i), 0) != 0)) {
                     Edge<Route,Hub> e = graph.insertEdge(vertexArrayList.get(j), vertexArrayList.get(i), new Route(routes.get(j).get(i)));
                     as.put(j, e);
-                    System.out.println("WHY ARE YOU NULL --> "+routes.get(j).get(i));
                 }
 
             }
         }
-
-        System.out.println(graph);
-
-
-
 
         String customProps = "edge.label = true" + "\n" + "edge.arrow = false";
         SmartGraphProperties properties = new SmartGraphProperties(customProps);
