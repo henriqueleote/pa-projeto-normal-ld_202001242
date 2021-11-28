@@ -55,11 +55,12 @@ public class GraphAdjacencyList<V,E> implements Graph<V, E>{
     @Override
     public Vertex<V> opposite(Vertex<V> v, Edge<E, V> e) throws InvalidVertexException, InvalidEdgeException {
         MyVertex myV = checkVertex(v);
-        MyEdge myE = checkEdge(e);
+        if(!myV.incidentEdges.contains(e)) throw new InvalidEdgeException("Edge is not connected to the origin vertex");
         for (Vertex<V> i:vertices.values()) {
-            MyVertex myU = new MyVertex(i.element());
-            if( myV.incidentEdges.contains(e) && myU.incidentEdges.contains(e))
+            MyVertex myU = checkVertex(i);
+            if( myU.incidentEdges.contains(e) && i != v) {
                 return myU;
+            }
         }
         return null;
     }
@@ -125,7 +126,7 @@ public class GraphAdjacencyList<V,E> implements Graph<V, E>{
     public E removeEdge(Edge<E, V> e) throws InvalidEdgeException {
         MyEdge myEdge = checkEdge(e);
         for (Vertex<V> i:vertices.values()) {
-            MyVertex myU = new MyVertex(i.element());
+            MyVertex myU = checkVertex(i);
             for (Edge<E,V> k:myU.incidentEdges) {
                 if(k==e)
                   myU.incidentEdges.remove(k);
@@ -156,7 +157,7 @@ public class GraphAdjacencyList<V,E> implements Graph<V, E>{
         MyEdge myEdge1 = myEdge;
         myEdge1.element = newElement;
         for (Vertex<V> i:vertices.values()) {
-            MyVertex myU = new MyVertex(i.element());
+            MyVertex myU = checkVertex(i);
             for (Edge<E,V> k:myU.incidentEdges) {
                 if(k==e)
                     k = myEdge1;
@@ -268,6 +269,16 @@ public class GraphAdjacencyList<V,E> implements Graph<V, E>{
         }
 
         return sb.toString();
+    }
+
+    public Edge<E, V> getEdgeFromVertex(Vertex<V> v, E edgeElement){
+        if(edgeElement == null) throw new InvalidEdgeException("Edge element is null");
+        MyVertex myV = checkVertex(v);
+        for (Edge<E,V> k:myV.incidentEdges) {
+            if(k.element()==edgeElement)
+                return k;
+        }
+        return null;
     }
 }
 

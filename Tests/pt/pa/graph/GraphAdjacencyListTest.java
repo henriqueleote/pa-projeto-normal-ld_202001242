@@ -68,7 +68,9 @@ class GraphAdjacencyListTest {
 
     @Test
     void opposite() {
-        
+        Distance d = new Distance(14151);
+        distances.insertEdge(london, helsinky, d);
+        assertTrue(distances.opposite(london,distances.getEdgeFromVertex(london, d)).equals(helsinky));
     }
 
     @Test
@@ -84,12 +86,12 @@ class GraphAdjacencyListTest {
 
     @Test
     void insertEdge1() {
-        //Edge<> e1 = new Edge<>();
-        //assertTrue(distances.edges().contains(e1));
+
     }
 
     @Test
     void insertEdge2() {
+
     }
 
     @Test
@@ -100,8 +102,8 @@ class GraphAdjacencyListTest {
 
     @Test
     void removeEdge() {
-        //distances.removeEdge(cenas);
-        //assertFalse(distances.edges().contains(cenas));
+
+
     }
 
     @Test
