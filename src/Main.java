@@ -25,7 +25,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws FileNotFoundException {
         FileManager fm = new FileManager();
         Graph<Hub, Route> graph = new GraphAdjacencyList<>();
-        /* */
+
         fm.importHubs("dataset/sgb32/name");
         fm.importWeight("dataset/sgb32/weight");
         fm.importCoordinates("dataset/sgb32/xy");
@@ -39,7 +39,8 @@ public class Main extends Application {
         fm.importCoordinates("dataset/sgb128/xy");
         ArrayList<Hub> hubs = fm.loadHubs();
 
-        Map<Integer, ArrayList<Integer>> routes =  fm.importRoutes("dataset/sgb128/routes_1");
+      //Map<Integer, ArrayList<Integer>> routes =  fm.importRoutes("dataset/sgb128/routes_1");
+        Map<Integer, ArrayList<Integer>> routes =  fm.importRoutes("dataset/sgb128/routes_2");
         */
         ArrayList<Vertex> vertexArrayList = new ArrayList<>();
         for(int i = 0; i < hubs.size(); i++) {
@@ -58,9 +59,11 @@ public class Main extends Application {
 
             }
         }
+        System.out.println(graph);
 
-        String customProps = "edge.label = true" + "\n" + "edge.arrow = false";
-        SmartGraphProperties properties = new SmartGraphProperties(customProps);
+        //String para mostrar no javafx o valor de cada aresta
+        //String customProps = "edge.label = true" + "\n" + "edge.arrow = false";
+        SmartGraphProperties properties = new SmartGraphProperties();
         SmartGraphPanel<Hub, Route> graphView = new SmartGraphPanel<>(graph, properties, new SmartCircularSortedPlacementStrategy());
 
         Scene scene = new Scene(new SmartGraphDemoContainer(graphView), 1024, 768);
@@ -77,7 +80,38 @@ public class Main extends Application {
             graphView.setVertexPosition(vvv, vvv.element().getX(),vvv.element().getY());
         }
 
+        graphView.setVertexDoubleClickAction((SmartGraphVertex<Hub> graphVertex) -> {
+            System.out.println("Vertex contains element: " + graphVertex.getUnderlyingVertex().element());
+
+            //toggle different styling
+            if( !graphVertex.removeStyleClass("myVertex") ) {
+                /* for the golden vertex, this is necessary to clear the inline
+                css class. Otherwise, it has priority. Test and uncomment. */
+                //graphVertex.setStyle(null);
+
+                graphVertex.addStyleClass("myVertex");
+            }
+
+            //want fun? uncomment below with automatic layout
+            //graph.removeVertex(graphVertex.getUnderlyingVertex());
+            //graphView.update();
+        });
+
+        /*
+        graphView.setEdgeDoubleClickAction(graphEdge -> {
+            System.out.println("Edge contains element: " + graphEdge.getUnderlyingEdge().element());
+            //dynamically change the style when clicked
+            graphEdge.setStyle("-fx-stroke: black; -fx-stroke-width: 3;");
+
+            graphEdge.getStylableArrow().setStyle("-fx-stroke: black; -fx-stroke-width: 3;");
+
+            //uncomment to see edges being removed after click
+            Edge<Route, Hub> underlyingEdge = graphEdge.getUnderlyingEdge();
+            graph.removeEdge(underlyingEdge);
+            graphView.update();
+        });
+
+        */
+
     }
-
-
 }
