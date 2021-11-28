@@ -14,13 +14,14 @@ Esta primeira milestone tem objetivos os seguintes pontos:
 
 ## Resumo do Trabalho
 
-Nesta milestone, começou-se por implementar a lista de adjacências com os métodos para inserir e remover vértices e arestas,
-guardando-os em Coleções para serem consultados e utilizados no Grafo.
+Nesta milestone, começou-se por implementar a lista de adjacências com os métodos para inserir e remover vértices e arestas, guardando-os em Coleções para serem consultados e utilizados no Grafo.
+
 Implementou-se um File Manager, derivado da classe Serializable, que serve para importar os dados do dataset, fornecidos pelo docente.
+
 Foram implementados testes unitários JUnit para testar a inserção e remoção de dados assim como o envio de exceções, estando todos a funcionar.
+
 Foram realizados também mockups da interface gráfica, de maneira a ter uma ideia do que implementar em JavaFX na próxima fase de projeto, tendo mais que um, para posteriormente se decidir qual o melhor.
 
-
-
-
+### Demonstração da Milestone
+![](network.png)
 
