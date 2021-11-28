@@ -37,7 +37,7 @@ public class GraphAdjacencyList<V,E> implements Graph<V, E>{
     public Collection<Edge<E, V>> edges() {
         List<Edge<E,V>> edgeList = new ArrayList<>();
         for (Vertex<V> i:vertices.values()) {
-            MyVertex myU = new MyVertex(i.element());
+            MyVertex myU = checkVertex(i);
             for (Edge<E,V> k:myU.incidentEdges) {
                 if(!edgeList.contains(k))
                     edgeList.add(k);
