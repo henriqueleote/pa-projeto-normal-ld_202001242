@@ -12,6 +12,9 @@ import java.nio.file.Files;
 import java.util.*;
 import java.util.stream.Collectors;
 
+
+import static java.lang.Integer.parseInt;
+
 public class FileManager implements Serializable {
     private  Map<Integer, Integer> coordinatesList;
     private  ArrayList<Hub> hubList;
@@ -21,46 +24,46 @@ public class FileManager implements Serializable {
         coordinatesList = new HashMap<>();
     }
 
-    public ArrayList<Hub> importHubs(String filename) {
-        String file = "dataset/sgb32/"+ filename + ".txt";
+    public void importHubs(String filename) {
+        String file = filename + ".txt";
         try {
             BufferedReader br = new BufferedReader(new FileReader(file));
             String s;
             while((s = br.readLine()) != null){
-
                 hubList.add(new Hub(s));
                 System.out.println(s);
             }
             br.close();
 
         } catch (IOException e){
-            System.out.println("dsadsadsa");
+            System.out.println("File doesn't exists or it may be broken!");
         }
-        return hubList;
     }
 
-    public ArrayList<Integer> importWeight(String filename){
-        String file = "dataset/sgb32/"+ filename + ".txt";
+    public void importWeight(String filename){
+        String file = filename + ".txt";
         ArrayList<Integer> weightList = new ArrayList<>();
         String aux = "";
+        int i = 0;
         try {
             BufferedReader br = new BufferedReader(new FileReader(file));
 
             while((aux = br.readLine()) != null){
 
                 weightList.add(Integer.valueOf(aux));
+                hubList.get(i).setPopulation(Integer.valueOf(aux));
+                i++;
                 System.out.println(aux);
             }
             br.close();
 
         } catch (IOException e){
-            System.out.println("dsadsadsa");
+            System.out.println("File doesn't exists or it may be broken!");
         }
-        return weightList;
     }
 
-    public ArrayList<Hub> importCoordinates(String filename){
-        String file = "dataset/sgb32/"+ filename + ".txt";
+    public void importCoordinates(String filename){
+        String file = filename + ".txt";
 
         //Map<Integer, Integer> coordinatesList = new HashMap<>();
         Map<Integer, Integer> auxs = new HashMap<>();
@@ -75,15 +78,7 @@ public class FileManager implements Serializable {
                 x = Integer.parseInt(aux.substring(0, aux.indexOf(" ")));
                 String sss = aux.substring(aux.indexOf(" ")+1).trim();
                 y = Integer.parseInt(sss);
-
                 hubList.get(i).setXY(x,y);
-                //System.out.println("teste - X"+hubList.get(i).getX() + "teste - Y"+hubList.get(i).getY());
-                //auxs.put(x,y);
-                //System.out.println("ANTES "+i + " " + x+" - X "+y+" - Y ");
-                //coordinatesList.put(x,y);
-                //System.out.println("LISTA APOS PUT "+coordinatesList);
-                //auxs.put(x,y);
-                //System.out.println("DEPOIS "+i + " " + x+" - X "+y+" - Y ");
                 i++;
 
 
@@ -91,47 +86,44 @@ public class FileManager implements Serializable {
             br.close();
 
         } catch (IOException e){
-            System.out.println("dsadsadsa");
+            System.out.println("File doesn't exists or it may be broken!");
         }
         //return coordinatesList;
         for(Hub h : hubList){
             System.out.println(h.getName() + " X - " + h.getX() +" Y - " + h.getY());
         }
-        return hubList;
     }
 
-    public Map<Integer, List<String>> importRoutes (String filename){
-        String file = "dataset/sgb32/"+ filename + ".txt";
-        Map<Integer, List<String>> toReturn = new HashMap<>();
-        List<String> listAux = new ArrayList<>();
+    public Map<Integer, ArrayList<Integer>> importRoutes (String filename){
+        String file = filename + ".txt";
+        Map<Integer, ArrayList<Integer>> toReturn = new HashMap<>();
+        BufferedReader br = null;
         String aux = "";
-        int i = 0;
+        int as = 0;
         try {
-            BufferedReader br = new BufferedReader(new FileReader(file));
+            br = new BufferedReader(new FileReader(file));
+            ArrayList<Integer> values = new ArrayList<>();
 
             while((aux = br.readLine()) != null){
                 String[] a = aux.split(" ");
-                for(int s = 0; s < a.length; s++) {
-                    Array.get(a, s);
-                    Object u = Array.get(a, s);
-                    //System.out.println("Current index is: " + s + " ---> " + u);
-
-                    List<String> listAux2 = Arrays.asList(a);
-
-                    listAux.add(listAux2.get(s));
-                    toReturn.put(i, listAux);
-                    // = Arrays.stream(a).toArray();
+                for (int i = 0; i<a.length; i++){
+                    values.add(parseInt(a[i]));
                 }
-               i++;
-
-
+                toReturn.put(as, values);
+                as++;
+                values = new ArrayList<>();
             }
             br.close();
-
         } catch (IOException e){
-            System.out.println("dsadsadsa");
+            System.out.println("File doesn't exists or it may be broken!");
         }
-        System.out.println("TORETURN --> "+toReturn.get(0).get(5));
         return toReturn;
     }
+
+    public ArrayList<Hub> loadHubs() {
+        return hubList;
+    }
+
+
+
 }

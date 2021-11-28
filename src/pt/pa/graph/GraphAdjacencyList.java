@@ -38,9 +38,10 @@ public class GraphAdjacencyList<V,E> implements Graph<V, E>{
 
     @Override
     public Collection<Edge<E, V>> edges() {
-        List<Edge<E,V>> edgeList = new ArrayList<>();
+
+      List<Edge<E,V>> edgeList = new ArrayList<>();
         for (Vertex<V> i:vertices.values()) {
-            MyVertex myU = new MyVertex(i.element());
+            MyVertex myU = checkVertex(i);
             for (Edge<E,V> k:myU.incidentEdges) {
                 if(!edgeList.contains(k))
                     edgeList.add(k);
@@ -58,11 +59,12 @@ public class GraphAdjacencyList<V,E> implements Graph<V, E>{
     @Override
     public Vertex<V> opposite(Vertex<V> v, Edge<E, V> e) throws InvalidVertexException, InvalidEdgeException {
         MyVertex myV = checkVertex(v);
-        MyEdge myE = checkEdge(e);
+        if(!myV.incidentEdges.contains(e)) throw new InvalidEdgeException("Edge is not connected to the origin vertex");
         for (Vertex<V> i:vertices.values()) {
-            MyVertex myU = new MyVertex(i.element());
-            if( myV.incidentEdges.contains(e) && myU.incidentEdges.contains(e))
+            MyVertex myU = checkVertex(i);
+            if( myU.incidentEdges.contains(e) && i != v) {
                 return myU;
+            }
         }
         return null;
     }
@@ -81,14 +83,16 @@ public class GraphAdjacencyList<V,E> implements Graph<V, E>{
     }
 
     @Override
-    public Vertex<V> insertVertex(V vElement) throws InvalidVertexException {
+    public  Vertex<V> insertVertex(V vElement) throws InvalidVertexException {
         MyVertex v = new MyVertex(vElement);
         vertices.put(vElement,v);
         return v;
     }
 
+
+
     @Override
-    public Edge<E, V> insertEdge(Vertex<V> u, Vertex<V> v, E edgeElement) throws InvalidVertexException, InvalidEdgeException {
+    public  Edge<E, V> insertEdge(Vertex<V> u, Vertex<V> v, E edgeElement) throws InvalidVertexException, InvalidEdgeException {
         MyVertex myU = checkVertex(u);
         MyVertex myV = checkVertex(v);
         MyEdge e = new MyEdge(edgeElement);
@@ -183,7 +187,7 @@ public class GraphAdjacencyList<V,E> implements Graph<V, E>{
         }
     }
 
-    private class MyEdge implements Edge<E, V> {
+     private class MyEdge implements Edge<E, V> {
         private E element;
 
         public MyEdge(E element) {
@@ -268,4 +272,3 @@ public class GraphAdjacencyList<V,E> implements Graph<V, E>{
         return sb.toString();
     }
 }
-

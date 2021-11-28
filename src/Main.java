@@ -1,23 +1,19 @@
 import com.brunomnsilva.smartgraph.containers.SmartGraphDemoContainer;
-import com.brunomnsilva.smartgraph.example.City;
-import com.brunomnsilva.smartgraph.example.Distance;
 import com.brunomnsilva.smartgraph.graphview.SmartCircularSortedPlacementStrategy;
 import com.brunomnsilva.smartgraph.graphview.SmartGraphPanel;
 import com.brunomnsilva.smartgraph.graphview.SmartGraphProperties;
+import com.brunomnsilva.smartgraph.graphview.SmartGraphVertex;
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import pt.pa.graph.Graph;
-import pt.pa.graph.GraphAdjacencyList;
-import pt.pa.graph.GraphEdgeList;
-import pt.pa.graph.Vertex;
+import pt.pa.graph.*;
 import pt.pa.model.Hub;
 import pt.pa.model.Route;
 
 import java.io.FileNotFoundException;
 import java.util.*;
+
 
 public class Main extends Application {
 
@@ -28,26 +24,39 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws FileNotFoundException {
         FileManager fm = new FileManager();
-        Graph<Hub, Route> graph = new GraphEdgeList<>();
+        Graph<Hub, Route> graph = new GraphAdjacencyList<>();
+        /* */
+        fm.importHubs("dataset/sgb32/name");
+        fm.importWeight("dataset/sgb32/weight");
+        fm.importCoordinates("dataset/sgb32/xy");
+        ArrayList<Hub> hubs = fm.loadHubs();
+        Map<Integer, ArrayList<Integer>> routes =  fm.importRoutes("dataset/sgb32/routes_1");
 
 
-        ArrayList<Hub> as = fm.importHubs("name");
-        ArrayList<Hub> bs = fm.importCoordinates("xy");
-        Map<Integer, List<String>> routes =  fm.importRoutes("routes_1");
+        /*
+        fm.importHubs("dataset/sgb128/name");
+        fm.importWeight("dataset/sgb128/weight");
+        fm.importCoordinates("dataset/sgb128/xy");
+        ArrayList<Hub> hubs = fm.loadHubs();
 
-        ArrayList<Vertex> vv = new ArrayList<>();
-        for(int i = 0; i < bs.size(); i++) {
-            Vertex<Hub> v = graph.insertVertex(bs.get(i));
-            vv.add(v);
-            System.out.println("HUB: "+bs.get(i).getName() + " " + bs.get(i).getX() + " - " + bs.get(i).getY());
+        Map<Integer, ArrayList<Integer>> routes =  fm.importRoutes("dataset/sgb128/routes_1");
+        */
+        ArrayList<Vertex> vertexArrayList = new ArrayList<>();
+        for(int i = 0; i < hubs.size(); i++) {
+            Vertex<Hub> v = graph.insertVertex(hubs.get(i));
+            vertexArrayList.add(v);
+            System.out.println("HUB: "+hubs.get(i).getName() + " " + hubs.get(i).getX() + " - " + hubs.get(i).getY());
         }
-        System.out.println(routes.get(0).get(5));
-        graph.insertEdge(vv.get(0), vv.get(5), new Route(Integer.parseInt(routes.get(0).get(6))));
-       /* for(int j = 0; j < vv.size(); j++){
-            for(int i = 0; i < routes.size(); i++){
-                graph.insertEdge(vv.get(j), vv.get(i), new Route(Integer.parseInt(routes.get(j).get(i))));
+        System.out.println(routes.get(1).get(5));
+        Map<Integer, Edge<Route,Hub>> as = new HashMap<>();
+        for(int j = 0; j < vertexArrayList.size(); j++){
+            for(int i = 0; i < routes.size(); i++) {
+                if ((Integer.compare(routes.get(j).get(j-i), 0) != 0)) {
+                    Edge<Route,Hub> e = graph.insertEdge(vertexArrayList.get(j), vertexArrayList.get(i), new Route(routes.get(j).get(j)));
+                    as.put(j, e);
+                }
             }
-        }*/
+        }
 
 
 
@@ -66,19 +75,9 @@ public class Main extends Application {
 
         graphView.init();
 
-        for(Vertex<Hub> vvv:vv){
+        for(Vertex<Hub> vvv:vertexArrayList){
             graphView.setVertexPosition(vvv, vvv.element().getX(),vvv.element().getY());
         }
-        //Vertex<Hub> v = graph.insertVertex(new Hub("s"));
-
-
-        /* for(Hub s : as){
-            Vertex<Hub> v = graph.insertVertex(s);
-            System.out.println(s.getX());
-        }*/
-
-
-
 
     }
 
