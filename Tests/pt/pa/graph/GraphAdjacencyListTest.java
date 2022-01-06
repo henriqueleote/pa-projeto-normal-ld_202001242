@@ -61,11 +61,23 @@ class GraphAdjacencyListTest {
 
     @Test
     void numVertices() {
+        Vertex<City> lisbon;
+        assertEquals(6,distances.numVertices());
+        lisbon = distances.insertVertex(new City("Lisbon", 0));
+        assertEquals(7,distances.numVertices());
+        distances.removeVertex(lisbon);
         assertEquals(6,distances.numVertices());
     }
 
     @Test
     void numEdges() {
+        Vertex<City> lisbon;
+        lisbon = distances.insertVertex(new City("Lisbon", 0));
+        Distance dteste = new Distance(1000);
+        assertEquals(8,distances.numEdges());
+        distances.insertEdge(lisbon, newYork, dteste);
+        assertEquals(9,distances.numEdges());
+        distances.removeEdge(distances.getEdgeFromVertex(lisbon, dteste));
         assertEquals(8,distances.numEdges());
     }
 
@@ -100,6 +112,7 @@ class GraphAdjacencyListTest {
     void removeVertex() {
         distances.removeVertex(newYork);
         assertFalse(distances.vertices().contains(newYork));
+        assertEquals(5,distances.numVertices());
     }
 
     @Test
