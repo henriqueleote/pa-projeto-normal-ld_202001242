@@ -1,31 +1,32 @@
-import com.brunomnsilva.smartgraph.example.City;
-import com.sun.corba.se.impl.corba.CORBAObjectImpl;
-import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
-import pt.pa.graph.Vertex;
 import pt.pa.model.Hub;
 
 import java.io.*;
-import java.lang.reflect.Array;
-import java.nio.Buffer;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
 import java.util.*;
 import java.util.stream.Collectors;
 
 
 import static java.lang.Integer.parseInt;
 
-public class FileManager implements Serializable {
+
+/*
+* Esta classe é responsável pela leitura dos datasets
+*
+* */
+public class FileLoader implements Serializable {
     private  Map<Integer, Integer> coordinatesList;
     private  ArrayList<Hub> hubList;
 
-    public FileManager() {
+    public FileLoader(String folderName, String routeName) {
         this.hubList = new ArrayList<>();
         coordinatesList = new HashMap<>();
+        importHubs(folderName);
+        importWeight(folderName);
+        importCoordinates(folderName);
+        importRoutes(folderName,routeName);
     }
 
-    public void importHubs(String filename) {
-        String file = filename + ".txt";
+    public void importHubs(String foldername) {
+        String file = foldername + "name.txt";
         try {
             BufferedReader br = new BufferedReader(new FileReader(file));
             String s;
@@ -40,8 +41,8 @@ public class FileManager implements Serializable {
         }
     }
 
-    public void importWeight(String filename){
-        String file = filename + ".txt";
+    public void importWeight(String foldername){
+        String file = foldername + "weight.txt";
         ArrayList<Integer> weightList = new ArrayList<>();
         String aux = "";
         int i = 0;
@@ -62,8 +63,8 @@ public class FileManager implements Serializable {
         }
     }
 
-    public void importCoordinates(String filename){
-        String file = filename + ".txt";
+    public void importCoordinates(String foldername){
+        String file = foldername + "xy.txt";
 
         //Map<Integer, Integer> coordinatesList = new HashMap<>();
         Map<Integer, Integer> auxs = new HashMap<>();
@@ -94,8 +95,8 @@ public class FileManager implements Serializable {
         }
     }
 
-    public Map<Integer, ArrayList<Integer>> importRoutes (String filename){
-        String file = filename + ".txt";
+    public Map<Integer, ArrayList<Integer>> importRoutes (String foldername, String filename){
+        String file = foldername + filename +  ".txt";
         Map<Integer, ArrayList<Integer>> toReturn = new HashMap<>();
         BufferedReader br = null;
         String aux = "";
