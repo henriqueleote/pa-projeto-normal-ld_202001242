@@ -139,24 +139,13 @@ public class Main extends Application {
             //graphView.update();
         });
 
-
-        /*
-        //NullPointerException quando ocorre um double click em cima duma aresta
-
         graphView.setEdgeDoubleClickAction(graphEdge -> {
             System.out.println("Edge contains element: " + graphEdge.getUnderlyingEdge().element());
             //dynamically change the style when clicked
             graphEdge.setStyle("-fx-stroke: black; -fx-stroke-width: 3;");
-
-            graphEdge.getStylableArrow().setStyle("-fx-stroke: black; -fx-stroke-width: 3;");
-
-            //uncomment to see edges being removed after click
-            Edge<Route, Hub> underlyingEdge = graphEdge.getUnderlyingEdge();
-            graph.removeEdge(underlyingEdge);
-            graphView.update();
         });
 
-        */
+
 
     }
 }
