@@ -27,7 +27,7 @@ public class Main extends Application {
         Graph<Hub, Route> graph = new GraphAdjacencyList<>();
 
         // Parte do código para abrir o sgb32
-/*
+
         fm.importHubs("dataset/sgb32/name");
         fm.importWeight("dataset/sgb32/weight");
         fm.importCoordinates("dataset/sgb32/xy");
@@ -35,15 +35,15 @@ public class Main extends Application {
         Map<Integer, ArrayList<Integer>> routes =  fm.importRoutes("dataset/sgb32/routes_1");
 
         // Parte do código para abrir o sgb128
-
+        /*
         fm.importHubs("dataset/sgb128/name");
         fm.importWeight("dataset/sgb128/weight");
         fm.importCoordinates("dataset/sgb128/xy");
         ArrayList<Hub> hubs = fm.loadHubs();
 
-      //Map<Integer, ArrayList<Integer>> routes =  fm.importRoutes("dataset/sgb128/routes_1");
-        Map<Integer, ArrayList<Integer>> routes =  fm.importRoutes("dataset/sgb128/routes_2");
-
+        //Map<Integer, ArrayList<Integer>> routes =  fm.importRoutes("dataset/sgb128/routes_1");
+        //Map<Integer, ArrayList<Integer>> routes =  fm.importRoutes("dataset/sgb128/routes_2");
+        */
         ArrayList<Vertex> vertexArrayList = new ArrayList<>();
         for(int i = 0; i < hubs.size(); i++) {
             Vertex<Hub> v = graph.insertVertex(hubs.get(i));
