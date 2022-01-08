@@ -1,3 +1,5 @@
+import com.brunomnsilva.smartgraph.example.City;
+import com.brunomnsilva.smartgraph.example.Distance;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -69,8 +71,8 @@ public class Menus{
                 Text title = new Text("Adicionar Caminho");
                 title.setFont(Font.font("Verdana", FontWeight.BOLD,20));
                 Text caminho = new Text("Caminho");
-                Text ponto1 = new Text("Ponto 2");
-                Text ponto2 = new Text("Ponto 1");
+                Text ponto1 = new Text("Ponto 1");
+                Text ponto2 = new Text("Ponto 2");
                 TextField txt1 = new TextField();
                 TextField txt2 = new TextField();
                 TextField txt3 = new TextField();
@@ -83,7 +85,10 @@ public class Menus{
                 submit.setOnAction(new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(ActionEvent event) {
-
+                        String p1 = txt1.getText();
+                        String p2 = txt2.getText();
+                        String pName = txt3.getText();
+                        //adjacency.insertEdge(adjacency.getVertexByName(p1),adjacency.getVertexByName(p2), new Distance(???));
                     }
                 });
                 voltar.setOnAction(new EventHandler< ActionEvent >() {
@@ -137,6 +142,13 @@ public class Menus{
             }
         });
 
+        btn0.setOnAction(new EventHandler< ActionEvent >() {
+            @Override
+            public void handle(ActionEvent event) {
+                stage.close();
+            }
+        });
+
         root.setAlignment(Pos.CENTER);
         root.setPadding(new Insets(10, 10, 10, 10));
         root.setVgap(5);
@@ -171,6 +183,18 @@ public class Menus{
         submit.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                if(function.equalsIgnoreCase("Adicionar Cidade")){
+                    String city = txt.getText();
+                    adjacency.insertVertex(new City(city,0));
+                }
+                if(function.equalsIgnoreCase("Remover Cidade")){
+                    String city = txt.getText();
+                    //adjacency.removeVertex(adjacency.getVertexByName(city));
+                }
+                if(function.equalsIgnoreCase("Remover Caminho")){
+                    String path = txt.getText();
+                    //adjacency.removeEdge(adjacency.getEdgeByName(path));
+                }
 
             }
         });

@@ -168,6 +168,7 @@ public class GraphAdjacencyList<V,E> implements Graph<V, E>{
         return e.element();
     }
 
+
     @Override
     public V replace(Vertex<V> v, V newElement) throws InvalidVertexException {
         if(newElement==null) throw new InvalidVertexException("Vertex element is null");
