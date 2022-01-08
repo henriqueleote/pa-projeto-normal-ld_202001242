@@ -1,3 +1,5 @@
+package pt.pa.model;
+
 import pt.pa.model.Hub;
 
 import java.io.*;
@@ -66,8 +68,6 @@ public class FileLoader implements Serializable {
     public void importCoordinates(String foldername){
         String file = foldername + "xy.txt";
 
-        //Map<Integer, Integer> coordinatesList = new HashMap<>();
-        Map<Integer, Integer> auxs = new HashMap<>();
         String aux;
         int x = 0;
         int y = 0;

@@ -1,22 +1,53 @@
+package pt.pa.model;
+
 import pt.pa.graph.Edge;
 import pt.pa.graph.Graph;
 import pt.pa.graph.GraphAdjacencyList;
 import pt.pa.graph.Vertex;
-import pt.pa.model.Hub;
-import pt.pa.model.Route;
+import pt.pa.observerpattern.*;
 
 import java.io.FileNotFoundException;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
-public class Network {
+
+public class Network extends Subject {
     private Graph<Hub, Route> graph;
-    private FileLoader fm = new FileLoader("dataset/sgb32/", "routes_1");
+    private ArrayList<Hub> hubs;
+    private FileLoader fm;
     public Network() {
         graph  = new GraphAdjacencyList<>();
+        hubs = new ArrayList<>();
     }
 
     public void loadFiles (String foldername, String routeFileName) throws FileNotFoundException{
-        fm.importRoutes(foldername, routeFileName);
+        this.fm = new FileLoader(foldername, routeFileName);
+        this.inicializeGraph(foldername, routeFileName);
+    }
+
+    private void inicializeGraph(String foldername, String routeFileName){
+        hubs = fm.loadHubs();
+        Map<Integer, ArrayList<Integer>> routes =  fm.importRoutes(foldername, routeFileName);
+
+        ArrayList<Vertex> vertexArrayList = new ArrayList<>();
+        for(int i = 0; i < hubs.size(); i++) {
+            Vertex<Hub> v = graph.insertVertex(hubs.get(i));
+            vertexArrayList.add(v);
+            System.out.println("HUB: "+ hubs.get(i).getName() + " " + hubs.get(i).getX() + " - " + hubs.get(i).getY());
+        }
+
+        Map<Integer, Edge<Route,Hub>> as = new HashMap<>();
+        for(int j = 0; j < hubs.size(); j++){
+            for(int i = j; i < routes.size(); i++) {
+                if ((routes.get(j).get(i) != 0)) {
+                    Edge<Route, Hub> e = graph.insertEdge(vertexArrayList.get(j), vertexArrayList.get(i), new Route(routes.get(j).get(i)));
+                    as.put(j, e);
+                }
+            }
+        }
+
+        System.out.println("PRIVATE METHOD"+graph);
     }
 
     public int size(){
@@ -31,6 +62,7 @@ public class Network {
         for(Vertex<Hub> hub: graph.vertices()){
             if(hub.element().getName().equals(hubName)){
                 System.out.println(hub.element().getName() + "\n"+ hub.element().getPopulation() + "\n"+ hub.element().getX() + "\n" + hub.element().getY());
+                return hub;
             }
         }
         return null;
@@ -51,9 +83,9 @@ public class Network {
         Vertex<Hub> secondVertex = findHub(secondHubName);
 
         for(Edge<Route, Hub> e : graph.incidentEdges(firstVertex)){
-                if(graph.opposite(firstVertex, e).equals(secondVertex)){
-                    return e;
-                }
+            if(graph.opposite(firstVertex, e).equals(secondVertex)){
+                return e;
+            }
         }
         return null;
     }
@@ -65,18 +97,18 @@ public class Network {
         return false;
     }
 
-    //FALTA ADICIONAR/REMOVER HUBS ADICIONAR/REMOVER ROTAS
 
     public void addHub(String hubName){
         if(!existHub(hubName)){
-            graph.insertVertex(new Hub(hubName));
+            this.graph.insertVertex(new Hub(hubName));
+            notifyObservers(null);
         }
     }
 
     public Vertex<Hub> removeHub(String name){
         Vertex<Hub> vertexToRemove = findHub(name);
         if(findHub(name) != null){
-           graph.removeVertex(findHub(name));
+            graph.removeVertex(findHub(name));
         }
         return vertexToRemove;
     }
