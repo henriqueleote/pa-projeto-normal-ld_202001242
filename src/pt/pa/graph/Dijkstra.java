@@ -11,31 +11,6 @@ public class Dijkstra {
      * 6 - Cálculo de caminhos mais curtos entre um par de hubs
      */
 
-    public static void main(String[] args) {
-        Graph<Hub, Route> graph = new GraphEdgeList<>();
-
-        Vertex<Hub> a = graph.insertVertex(new Hub("A"));
-        Vertex<Hub> b = graph.insertVertex(new Hub("B"));
-        Vertex<Hub> c = graph.insertVertex(new Hub("C"));
-        Vertex<Hub> d = graph.insertVertex(new Hub("D"));
-        Vertex<Hub> e = graph.insertVertex(new Hub("E"));
-
-        graph.insertEdge(a, b, new Route(6));
-        graph.insertEdge(a, d, new Route(1));
-        graph.insertEdge(b, d, new Route( 2));
-        graph.insertEdge(b, e, new Route(2));
-        graph.insertEdge(d, e, new Route( 1));
-        graph.insertEdge(b, c, new Route(5));
-        graph.insertEdge(c, e, new Route( 5));
-
-        System.out.println(graph);
-
-        DijkstraResult<Hub> result =calculateShortestPathFromOrigin(graph, c, e);
-        System.out.println("Cost = " + result.getCost());
-        System.out.println("Path = " + result.getPath()+"\n");
-        farthestHubs(graph);
-    }
-
     public static DijkstraResult<Hub> calculateShortestPathFromOrigin(Graph<Hub, Route> graph, Vertex<Hub> origin, Vertex<Hub> dest) {
         Map<Vertex<Hub>, Double> minDist = new HashMap<>();
         Map<Vertex<Hub>, Vertex<Hub>> predecessors = new HashMap<>();
@@ -110,7 +85,7 @@ public class Dijkstra {
     /*
      * 7 - Par de hubs mais distante
      */
-    public static void farthestHubs(Graph<Hub, Route> graph){
+    public static DijkstraResult<Hub> farthestHubs(Graph<Hub, Route> graph){
         double cost=0;
         List<Vertex<Hub>> listV = new ArrayList<>();
         for (Vertex<Hub> i:graph.vertices()) {
@@ -124,7 +99,6 @@ public class Dijkstra {
             }
 
         }
-        System.out.println("Hubs mais distantes: "+listV.toString());
-        System.out.println("Cost: "+cost);
+        return new DijkstraResult<Hub>(cost, calculateShortestPathFromOrigin(graph,listV.get(0), listV.get(1)).path);
     }
 }
