@@ -11,6 +11,7 @@ import pt.pa.graph.*;
 import pt.pa.model.Hub;
 import pt.pa.model.Route;
 
+import java.awt.*;
 import java.io.FileNotFoundException;
 import java.util.*;
 
@@ -23,9 +24,9 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws FileNotFoundException {
+        Menus menu = new Menus();
         FileManager fm = new FileManager();
         Graph<Hub, Route> graph = new GraphAdjacencyList<>();
-
         // Parte do código para abrir o sgb32
 
         fm.importHubs("dataset/sgb32/name");
@@ -99,9 +100,9 @@ public class Main extends Application {
             //graphView.update();
         });
 
-        /*
-        //NullPointerException quando ocorre um double click em cima duma aresta
 
+        //NullPointerException quando ocorre um double click em cima duma aresta
+        /*
         graphView.setEdgeDoubleClickAction(graphEdge -> {
             System.out.println("Edge contains element: " + graphEdge.getUnderlyingEdge().element());
             //dynamically change the style when clicked
@@ -115,7 +116,7 @@ public class Main extends Application {
             graphView.update();
         });
 
-        */
+*/
 
     }
 }
