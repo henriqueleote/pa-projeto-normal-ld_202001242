@@ -3,120 +3,160 @@ import com.brunomnsilva.smartgraph.graphview.SmartCircularSortedPlacementStrateg
 import com.brunomnsilva.smartgraph.graphview.SmartGraphPanel;
 import com.brunomnsilva.smartgraph.graphview.SmartGraphProperties;
 import com.brunomnsilva.smartgraph.graphview.SmartGraphVertex;
+import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import pt.pa.Command.NetworkController;
 import pt.pa.graph.*;
 import pt.pa.model.Hub;
 import pt.pa.model.Route;
+import pt.pa.model.Network;
 
-import java.awt.*;
+import javax.naming.NamingEnumeration;
 import java.io.FileNotFoundException;
 import java.util.*;
+
+import java.awt.*;
+
+import static sun.management.Agent.error;
 
 
 public class Main extends Application {
 
-    public static void main(String[] args) {
-        launch(args);
-    }
+
 
     @Override
     public void start(Stage primaryStage) throws FileNotFoundException {
+
+        Network graphLoader = new Network();
+        graphLoader.loadFiles("dataset/sgb32/", "routes_1");
+        Graph<Hub, Route> graph = graphLoader.getGraph();
+        NetworkController networkController = new NetworkController(graphLoader);
+
+
         Menus menu = new Menus();
-        FileManager fm = new FileManager();
-        Graph<Hub, Route> graph = new GraphAdjacencyList<>();
-        // Parte do código para abrir o sgb32
 
-        fm.importHubs("dataset/sgb32/name");
-        fm.importWeight("dataset/sgb32/weight");
-        fm.importCoordinates("dataset/sgb32/xy");
-        ArrayList<Hub> hubs = fm.loadHubs();
-        Map<Integer, ArrayList<Integer>> routes =  fm.importRoutes("dataset/sgb32/routes_1");
 
-        // Parte do código para abrir o sgb128
-        /*
-        fm.importHubs("dataset/sgb128/name");
-        fm.importWeight("dataset/sgb128/weight");
-        fm.importCoordinates("dataset/sgb128/xy");
-        ArrayList<Hub> hubs = fm.loadHubs();
 
-        //Map<Integer, ArrayList<Integer>> routes =  fm.importRoutes("dataset/sgb128/routes_1");
-        //Map<Integer, ArrayList<Integer>> routes =  fm.importRoutes("dataset/sgb128/routes_2");
-        */
-        ArrayList<Vertex> vertexArrayList = new ArrayList<>();
-        for(int i = 0; i < hubs.size(); i++) {
-            Vertex<Hub> v = graph.insertVertex(hubs.get(i));
-            vertexArrayList.add(v);
-            System.out.println("HUB: "+hubs.get(i).getName() + " " + hubs.get(i).getX() + " - " + hubs.get(i).getY());
-        }
 
-        Map<Integer, Edge<Route,Hub>> as = new HashMap<>();
-        for(int j = 0; j < vertexArrayList.size(); j++){
-            for(int i = j; i < routes.size(); i++) {
-                if ((Integer.compare(routes.get(j).get(i), 0) != 0)) {
-                    Edge<Route,Hub> e = graph.insertEdge(vertexArrayList.get(j), vertexArrayList.get(i), new Route(routes.get(j).get(i)));
-                    as.put(j, e);
+
+
+
+
+
+
+
+
+
+
+
+// Mudar para uma outra classe que será responsavel para a visualização do programa - por exemplo (MainScreenPanel)
+        BorderPane root = new BorderPane();
+        VBox box = new VBox(30);
+
+        SmartGraphProperties properties = new SmartGraphProperties();
+        SmartGraphPanel<Hub, Route> graphView = new SmartGraphPanel<>(graph, properties, new SmartCircularSortedPlacementStrategy());
+        SmartGraphDemoContainer smc = new SmartGraphDemoContainer(graphView);
+
+        root.setLeft(box);
+        root.setCenter(smc);
+
+        VBox editButtons = new VBox(8);
+        Button addProductButton = new Button("Add");
+        Button editProductButton = new Button("Remove");
+        Button removeProductButton = new Button("Undo");
+        editButtons.getChildren().add(addProductButton);
+        editButtons.getChildren().add(editProductButton);
+        editButtons.getChildren().add(removeProductButton);
+        editButtons.setAlignment(Pos.TOP_CENTER);
+        editButtons.setPadding(new Insets(5));
+        editButtons.getStyleClass().add("color-palette");
+        editButtons.setMinHeight(768);
+
+
+
+        TextField textFieldProductName;
+
+        GridPane gridPaneAddProduct = new GridPane();
+        gridPaneAddProduct.add(new Label("Name"), 0, 1);
+        textFieldProductName = new TextField();
+        gridPaneAddProduct.add(textFieldProductName, 1, 1);
+
+
+        addProductButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                if (textFieldProductName.getText().isEmpty()) {
+                    error("Missing product information.");
+                } else {
+                    try {
+                        String name = textFieldProductName.getText();
+                        networkController.addVertex(name);
+                        graphView.update();
+                        System.out.println("TESTES DO ADD \n"+graphLoader.getGraph().vertices());
+                    } catch (NumberFormatException nfe) {
+                        System.out.println("dsaDsadsadasdas");
+                    }
                 }
 
             }
-        }
-        System.out.println(graph);
+        });
 
-        //String para mostrar no javafx o valor de cada aresta
-        //String customProps = "edge.label = true" + "\n" + "edge.arrow = false";
-        SmartGraphProperties properties = new SmartGraphProperties();
-        SmartGraphPanel<Hub, Route> graphView = new SmartGraphPanel<>(graph, properties, new SmartCircularSortedPlacementStrategy());
 
-        Scene scene = new Scene(new SmartGraphDemoContainer(graphView), 1024, 768);
-        Stage stage = new Stage(StageStyle.DECORATED);
-        stage.setTitle("JavaFX SmartGraph pt.pa.model.City Distances");
-        stage.setMinHeight(500);
-        stage.setMinWidth(800);
-        stage.setScene(scene);
-        stage.show();
 
+
+box.getChildren().add(textFieldProductName);
+
+
+        editButtons.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
+        editButtons.setBorder(new Border(new BorderStroke(Color.valueOf("#9E9E9E"),
+                BorderStrokeStyle.SOLID,
+                CornerRadii.EMPTY,
+                BorderWidths.DEFAULT)));
+
+        box.getChildren().add(editButtons);
+
+        primaryStage.setTitle("Produtos");
+        primaryStage.setScene(new Scene(root, 1124, 768));
+        primaryStage.show();
         graphView.init();
 
-        for(Vertex<Hub> vvv:vertexArrayList){
-            graphView.setVertexPosition(vvv, vvv.element().getX(),vvv.element().getY());
+        for(Vertex<Hub> vertex : graphLoader.getGraph().vertices()){
+            graphView.setVertexPosition(vertex, vertex.element().getX(),vertex.element().getY());
         }
 
         graphView.setVertexDoubleClickAction((SmartGraphVertex<Hub> graphVertex) -> {
             System.out.println("Vertex contains element: " + graphVertex.getUnderlyingVertex().element());
-
-            //toggle different styling
-            if( !graphVertex.removeStyleClass("myVertex") ) {
-                /* for the golden vertex, this is necessary to clear the inline
-                css class. Otherwise, it has priority. Test and uncomment. */
-                //graphVertex.setStyle(null);
-
+            if(!graphVertex.removeStyleClass("myVertex") ) {
                 graphVertex.addStyleClass("myVertex");
             }
-
-            //want fun? uncomment below with automatic layout
-            //graph.removeVertex(graphVertex.getUnderlyingVertex());
-            //graphView.update();
         });
 
-
-        //NullPointerException quando ocorre um double click em cima duma aresta
-        /*
         graphView.setEdgeDoubleClickAction(graphEdge -> {
             System.out.println("Edge contains element: " + graphEdge.getUnderlyingEdge().element());
             //dynamically change the style when clicked
-            graphEdge.setStyle("-fx-stroke: black; -fx-stroke-width: 3;");
-
-            graphEdge.getStylableArrow().setStyle("-fx-stroke: black; -fx-stroke-width: 3;");
-
-            //uncomment to see edges being removed after click
-            Edge<Route, Hub> underlyingEdge = graphEdge.getUnderlyingEdge();
-            graph.removeEdge(underlyingEdge);
-            graphView.update();
+            if (!graphEdge.removeStyleClass("myEdge")) {
+                graphEdge.setStyle("-fx-stroke: black; -fx-stroke-width: 3;");
+                graphEdge.addStyleClass("myEdge");
+            } else{
+                graphEdge.removeStyleClass("myEdge");
+            }
         });
+    }
 
-*/
 
+    public static void main(String[] args) {
+        launch(args);
     }
 }

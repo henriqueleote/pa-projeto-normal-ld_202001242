@@ -20,6 +20,10 @@ public class Hub {
         this.y = y;
     }
 
+    public Hub getHub(){
+        return this;
+    }
+  
     public String getName() {
         return name;
     }

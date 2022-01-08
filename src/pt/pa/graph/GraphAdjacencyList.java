@@ -45,7 +45,8 @@ public class GraphAdjacencyList<V,E> implements Graph<V, E>{
 
     @Override
     public Collection<Edge<E, V>> edges() {
-        List<Edge<E,V>> edgeList = new ArrayList<>();
+
+      List<Edge<E,V>> edgeList = new ArrayList<>();
         for (Vertex<V> i:vertices.values()) {
             MyVertex myU = checkVertex(i);
             for (Edge<E,V> k:myU.incidentEdges) {
@@ -121,6 +122,8 @@ public class GraphAdjacencyList<V,E> implements Graph<V, E>{
         vertices.put(vElement,v);
         return v;
     }
+
+
 
     @Override
     public Edge<E, V> insertEdge(Vertex<V> u, Vertex<V> v, E edgeElement) throws InvalidVertexException, InvalidEdgeException {
@@ -216,11 +219,11 @@ public class GraphAdjacencyList<V,E> implements Graph<V, E>{
 
         @Override
         public String toString() {
-            return "Vertex{" + element + '}' + " --> " + incidentEdges.toString();
+            return "Vertex{" + element + '}' + " --> " + incidentEdges.toString() + "\n";
         }
     }
 
-    private class MyEdge implements Edge<E, V> {
+     private class MyEdge implements Edge<E, V> {
         private E element;
 
         public MyEdge(E element) {
@@ -315,4 +318,3 @@ public class GraphAdjacencyList<V,E> implements Graph<V, E>{
         return null;
     }
 }
-
