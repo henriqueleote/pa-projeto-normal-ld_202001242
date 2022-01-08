@@ -16,12 +16,15 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import pt.pa.graph.Dijkstra;
+import pt.pa.graph.DijkstraResult;
 import pt.pa.graph.GraphAdjacencyList;
 import javafx.event.ActionEvent;
 
 
 public class Menus{
     private GraphAdjacencyList adjacency;
+    private Dijkstra dijkstra;
     private Stage stage;
     private GridPane root;
     private Scene scene;
@@ -29,6 +32,7 @@ public class Menus{
 
     public Menus(){
         adjacency = new GraphAdjacencyList();
+        dijkstra = new Dijkstra();
         stage = new Stage();
         root = new GridPane();
         lbl = new Label();
@@ -47,6 +51,7 @@ public class Menus{
         Button btn8 = new Button("Exportar");
         Button btn0 = new Button("Sair");
 
+        //Adicionar Cidade
         btn1.setOnAction(new EventHandler< ActionEvent >() {
             @Override
             public void handle(ActionEvent event) {
@@ -54,6 +59,8 @@ public class Menus{
                 manageCity(title,"Adicionar Cidade");
             }
         });
+
+        //Remover Cidade
         btn2.setOnAction(new EventHandler< ActionEvent >() {
             @Override
             public void handle(ActionEvent event) {
@@ -62,6 +69,7 @@ public class Menus{
             }
         });
 
+        //Adicionar Caminho
         btn3.setOnAction(new EventHandler< ActionEvent >() {
             @Override
             public void handle(ActionEvent event) {
@@ -118,6 +126,7 @@ public class Menus{
             }
         });
 
+        //Remover Caminho
         btn4.setOnAction(new EventHandler< ActionEvent >() {
             @Override
             public void handle(ActionEvent event) {
@@ -126,6 +135,7 @@ public class Menus{
             }
         });
 
+        //Distancia mais curta
         btn5.setOnAction(new EventHandler< ActionEvent >() {
             @Override
             public void handle(ActionEvent event) {
@@ -134,6 +144,7 @@ public class Menus{
             }
         });
 
+        //Distancia mais longa
         btn6.setOnAction(new EventHandler< ActionEvent >() {
             @Override
             public void handle(ActionEvent event) {
@@ -142,6 +153,27 @@ public class Menus{
             }
         });
 
+        /*
+
+        //Ponto 3.1.7
+        btn7.setOnAction(new EventHandler< ActionEvent >() {
+            @Override
+            public void handle(ActionEvent event) {
+
+            }
+        });
+
+        //Exportar
+        btn8.setOnAction(new EventHandler< ActionEvent >() {
+            @Override
+            public void handle(ActionEvent event) {
+
+            }
+        });
+
+        */
+
+        //Sair
         btn0.setOnAction(new EventHandler< ActionEvent >() {
             @Override
             public void handle(ActionEvent event) {
@@ -162,7 +194,7 @@ public class Menus{
         root.add(btn7,1,7);
         root.add(btn8,1,8);
         root.add(btn0,1,9);
-        scene = new Scene(root, 300, 250);
+        scene = new Scene(root, 300, 300);
         stage.setScene(scene);
         stage.show();
     }
@@ -185,7 +217,7 @@ public class Menus{
             public void handle(ActionEvent event) {
                 if(function.equalsIgnoreCase("Adicionar Cidade")){
                     String city = txt.getText();
-                    adjacency.insertVertex(new City(city,0));
+                    //adjacency.insertVertex(new City(city));
                 }
                 if(function.equalsIgnoreCase("Remover Cidade")){
                     String city = txt.getText();
@@ -238,7 +270,12 @@ public class Menus{
         submit.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                if(function.equalsIgnoreCase("Adicionar Cidade")){
+                    String p1 = txt1.getText();
+                    String p2 = txt2.getText();
+                    //DijkstraResult result = dijkstra.calculateShortestPathFromOrigin(adjacency, adjacency.getVertexByName(p1),adjacency.getVertexByName(p2));
 
+                }
             }
         });
         voltar.setOnAction(new EventHandler< ActionEvent >() {
