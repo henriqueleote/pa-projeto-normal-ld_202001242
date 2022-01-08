@@ -2,6 +2,16 @@ package pt.pa.graph;
 
 import java.util.*;
 
+/* *****************************************************
+    PA 2021/2022 EN - Rede de Logistica
+
+    David Vaz - 201601644
+    Guilherme Oliveira - 202000719
+    Henrique Leote - 202001242
+    Venelin Arguirov - 202001104
+   ***************************************************** */
+
+
 public class GraphAdjacencyList<V,E> implements Graph<V, E>{
 
     private Map<V, Vertex<V>> vertices;
@@ -23,9 +33,6 @@ public class GraphAdjacencyList<V,E> implements Graph<V, E>{
         for (Vertex<V> i:vertices.values()) {
             MyVertex myU = checkVertex(i);
             count += myU.incidentEdges.size();
-            /*for (Edge<E,V> k:myU.incidentEdges) {
-                count++;
-            }*/
         }
         return count/2;
     }
@@ -56,6 +63,32 @@ public class GraphAdjacencyList<V,E> implements Graph<V, E>{
         return vertex.incidentEdges;
     }
 
+    public Map<Vertex<V>,Integer> hubsOrdered(){
+        Map<Vertex<V>,Integer> centrality = new HashMap<>();
+        for (Vertex<V> i:vertices.values()) {
+            centrality.put(i,incidentEdges(i).size());
+        }
+        Map<Vertex<V>, Integer> sortedMap = new LinkedHashMap<>();
+        for (Map.Entry<Vertex<V>, Integer> entry : sortValues(centrality)) sortedMap.put(entry.getKey(), entry.getValue());
+        return sortedMap;
+    }
+
+    private List<Map.Entry<Vertex<V>, Integer>> sortValues(Map<Vertex<V>,Integer> map){
+        List<Map.Entry<Vertex<V>, Integer>> list = new LinkedList<Map.Entry<Vertex<V>, Integer>>(map.entrySet());
+        Collections.sort(list, (o1, o2) -> (o1.getValue()).compareTo(o2.getValue()));
+        Collections.reverse(list);
+        return list;
+    }
+
+    public List<Map.Entry<Vertex<V>, Integer>> moreCentredHubs(Map<Vertex<V>,Integer> map){
+        List<Map.Entry<Vertex<V>, Integer>> five = new LinkedList<Map.Entry<Vertex<V>, Integer>>();
+        for(int i = 0; i<5; i++) {
+            five.add(sortValues(map).get(i));
+        }
+        return five;
+    }
+
+
     @Override
     public Vertex<V> opposite(Vertex<V> v, Edge<E, V> e) throws InvalidVertexException, InvalidEdgeException {
         MyVertex myV = checkVertex(v);
@@ -83,7 +116,8 @@ public class GraphAdjacencyList<V,E> implements Graph<V, E>{
     }
 
     @Override
-    public  Vertex<V> insertVertex(V vElement) throws InvalidVertexException {
+    public Vertex<V> insertVertex(V vElement) throws InvalidVertexException {
+        if(vElement==null) throw new InvalidVertexException("Vertex element is null");
         MyVertex v = new MyVertex(vElement);
         vertices.put(vElement,v);
         return v;
@@ -92,7 +126,8 @@ public class GraphAdjacencyList<V,E> implements Graph<V, E>{
 
 
     @Override
-    public  Edge<E, V> insertEdge(Vertex<V> u, Vertex<V> v, E edgeElement) throws InvalidVertexException, InvalidEdgeException {
+    public Edge<E, V> insertEdge(Vertex<V> u, Vertex<V> v, E edgeElement) throws InvalidVertexException, InvalidEdgeException {
+        if(edgeElement==null) throw new InvalidEdgeException("Edge element is null");
         MyVertex myU = checkVertex(u);
         MyVertex myV = checkVertex(v);
         MyEdge e = new MyEdge(edgeElement);
@@ -103,14 +138,16 @@ public class GraphAdjacencyList<V,E> implements Graph<V, E>{
 
     @Override
     public Edge<E, V> insertEdge(V vElement1, V vElement2, E edgeElement) throws InvalidVertexException, InvalidEdgeException {
+        if(vElement1==null || vElement2==null) throw new InvalidVertexException("Vertex element is null");
+        if(edgeElement==null) throw new InvalidEdgeException("Edge element is null");
         MyVertex myU = null;
         MyVertex myV = null;
         MyEdge e = new MyEdge(edgeElement);
         for (Vertex<V> i: vertices.values()) {
             if(vElement1.equals(i.element()))
-                myU = new MyVertex(vElement1);
+                myU = checkVertex(i);
             if(vElement2.equals(i.element()))
-                myV = new MyVertex(vElement2);
+                myV = checkVertex(i);
         }
         myU.incidentEdges.add(e);
         myV.incidentEdges.add(e);
@@ -120,45 +157,44 @@ public class GraphAdjacencyList<V,E> implements Graph<V, E>{
     @Override
     public V removeVertex(Vertex<V> v) throws InvalidVertexException {
         MyVertex myV = checkVertex(v);
-        MyVertex myV1 = myV;
-        vertices.remove(myV);
-        return myV1.element;
+        vertices.remove(myV.element);
+        return myV.element;
     }
 
     @Override
     public E removeEdge(Edge<E, V> e) throws InvalidEdgeException {
         MyEdge myEdge = checkEdge(e);
         for (Vertex<V> i:vertices.values()) {
-            MyVertex myU = new MyVertex(i.element());
-            for (Edge<E,V> k:myU.incidentEdges) {
-                if(k==e)
-                  myU.incidentEdges.remove(k);
-            }
+            MyVertex myU = checkVertex(i);
+            myU.incidentEdges.removeIf(k -> k == e);
         }
         return e.element();
     }
 
+
     @Override
     public V replace(Vertex<V> v, V newElement) throws InvalidVertexException {
+        if(newElement==null) throw new InvalidVertexException("Vertex element is null");
         MyVertex myV = checkVertex(v);
-        vertices.replace(newElement,myV);
-/*   MyVertex myV1 = myV;
+       /*  vertices.replace(newElement,myV);*/
+       MyVertex myV1 = myV;
         myV.element = newElement;
 
         for (Vertex<V> i:vertices.values()) {
             if(i.equals(myV))
                 i = myV;
-        }*/
+        }
         return myV.element();
     }
 
     @Override
     public E replace(Edge<E, V> e, E newElement) throws InvalidEdgeException {
+        if(newElement==null) throw new InvalidEdgeException("Edge element is null");
         MyEdge myEdge = checkEdge(e);
         MyEdge myEdge1 = myEdge;
         myEdge1.element = newElement;
         for (Vertex<V> i:vertices.values()) {
-            MyVertex myU = new MyVertex(i.element());
+            MyVertex myU = checkVertex(i);
             for (Edge<E,V> k:myU.incidentEdges) {
                 if(k==e)
                     k = myEdge1;
@@ -270,5 +306,15 @@ public class GraphAdjacencyList<V,E> implements Graph<V, E>{
         }
 
         return sb.toString();
+    }
+
+    public Edge<E, V> getEdgeFromVertex(Vertex<V> v, E edgeElement){
+        if(edgeElement == null) throw new InvalidEdgeException("Edge element is null");
+        MyVertex myV = checkVertex(v);
+        for (Edge<E,V> k:myV.incidentEdges) {
+            if(k.element()==edgeElement)
+                return k;
+        }
+        return null;
     }
 }

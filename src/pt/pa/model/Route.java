@@ -5,8 +5,6 @@ public class Route {
     private static int id = 0;
     private int counter = 0;
 
-
-
     public Route(int route) {
         this.route = route;
         this.id++;
@@ -18,7 +16,7 @@ public class Route {
     }
     public int getCounter() {
         return counter;
-    }
+    }  
     public int getRoute() {
         return route;
     }
@@ -29,7 +27,7 @@ public class Route {
 
     @Override
     public String toString(){
-            return getRoute() + "";
+        return getRoute() + "";
     }
 
 }

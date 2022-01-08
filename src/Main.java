@@ -27,6 +27,8 @@ import javax.naming.NamingEnumeration;
 import java.io.FileNotFoundException;
 import java.util.*;
 
+import java.awt.*;
+
 import static sun.management.Agent.error;
 
 
@@ -43,7 +45,7 @@ public class Main extends Application {
         NetworkController networkController = new NetworkController(graphLoader);
 
 
-
+        Menus menu = new Menus();
 
 
 

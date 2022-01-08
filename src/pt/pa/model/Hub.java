@@ -23,7 +23,7 @@ public class Hub {
     public Hub getHub(){
         return this;
     }
-
+  
     public String getName() {
         return name;
     }
