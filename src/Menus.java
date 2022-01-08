@@ -1,11 +1,9 @@
-import com.brunomnsilva.smartgraph.example.City;
-import com.brunomnsilva.smartgraph.example.Distance;
+import com.brunomnsilva.smartgraph.graphview.SmartGraphPanel;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -16,31 +14,41 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import pt.pa.Command.NetworkController;
 import pt.pa.graph.Dijkstra;
 import pt.pa.graph.DijkstraResult;
-import pt.pa.graph.GraphAdjacencyList;
+import pt.pa.graph.Graph;
 import javafx.event.ActionEvent;
+import pt.pa.model.Hub;
+import pt.pa.model.Network;
+import pt.pa.model.Route;
+
+import static sun.management.Agent.error;
 
 
 public class Menus{
-    private GraphAdjacencyList adjacency;
-    private Dijkstra dijkstra;
-    private Stage stage;
-    private GridPane root;
-    private Scene scene;
-    private Label lbl;
 
-    public Menus(){
-        adjacency = new GraphAdjacencyList();
+    private final Dijkstra dijkstra;
+    private final Network network;
+    private final Stage stage;
+    private final GridPane root;
+    private Scene scene;
+
+    private final NetworkController networkController;
+    private final SmartGraphPanel<Hub, Route> graphView;
+
+    public Menus(Graph<Hub, Route> graph, SmartGraphPanel<Hub, Route> graphView, Network network, NetworkController networkController){
+        this.graphView = graphView;
+        this.network = network;
+        this.networkController = networkController;
+
         dijkstra = new Dijkstra();
         stage = new Stage();
         root = new GridPane();
-        lbl = new Label();
-        Menu();
     }
 
-    public void Menu(){
-        lbl.setText("Escolha a dificuldade:");
+    public GridPane Menu(){
+
         Button btn1 = new Button("Adicionar Cidade");
         Button btn2 = new Button("Remover Cidade");
         Button btn3 = new Button("Adicionar Caminho");
@@ -50,6 +58,13 @@ public class Menus{
         Button btn7 = new Button("3.1.7");
         Button btn8 = new Button("Exportar");
         Button btn0 = new Button("Sair");
+
+        Button[] btnArray = {btn0,btn1,btn2,btn3,btn4,btn5,btn6,btn7,btn8};
+
+        for(int i=0; i<btnArray.length; i++){
+            btnArray[i].setBackground(new Background((new BackgroundFill(Color.WHITE, new CornerRadii(5), Insets.EMPTY))));
+            btnArray[i].setStyle("-fx-border-color:black;"+"-fx-border-width: 1 1 1 1;" + "-fx-border-radius: 5;");
+        }
 
         //Adicionar Cidade
         btn1.setOnAction(new EventHandler< ActionEvent >() {
@@ -95,8 +110,13 @@ public class Menus{
                     public void handle(ActionEvent event) {
                         String p1 = txt1.getText();
                         String p2 = txt2.getText();
-                        String pName = txt3.getText();
-                        //adjacency.insertEdge(adjacency.getVertexByName(p1),adjacency.getVertexByName(p2), new Distance(???));
+                        int route = Integer.parseInt(txt3.getText());
+                        try {
+                            network.addRoute(p1,p2,route);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        stage1.close();
                     }
                 });
                 voltar.setOnAction(new EventHandler< ActionEvent >() {
@@ -174,29 +194,22 @@ public class Menus{
         */
 
         //Sair
-        btn0.setOnAction(new EventHandler< ActionEvent >() {
-            @Override
-            public void handle(ActionEvent event) {
-                stage.close();
-            }
-        });
+        btn0.setOnAction(event -> stage.close());
 
         root.setAlignment(Pos.CENTER);
         root.setPadding(new Insets(10, 10, 10, 10));
-        root.setVgap(5);
+        root.setVgap(20);
         root.setHgap(20);
-        root.add(btn1,1,1);
-        root.add(btn2,1,2);
-        root.add(btn3,1,3);
-        root.add(btn4,1,4);
-        root.add(btn5,1,5);
-        root.add(btn6,1,6);
-        root.add(btn7,1,7);
-        root.add(btn8,1,8);
-        root.add(btn0,1,9);
-        scene = new Scene(root, 300, 300);
-        stage.setScene(scene);
-        stage.show();
+        root.add(btn1,1,7);
+        root.add(btn2,1,8);
+        root.add(btn3,1,9);
+        root.add(btn4,1,10);
+        root.add(btn5,1,11);
+        root.add(btn6,1,12);
+        root.add(btn7,1,13);
+        root.add(btn8,1,14);
+        root.add(btn0,1,15);
+        return root;
     }
 
     private void manageCity(Text title, String function) {
@@ -216,26 +229,41 @@ public class Menus{
             @Override
             public void handle(ActionEvent event) {
                 if(function.equalsIgnoreCase("Adicionar Cidade")){
-                    String city = txt.getText();
-                    //adjacency.insertVertex(new City(city));
+
+                    if (txt.getText().isEmpty()) {
+                        error("Missing product information.");
+                    } else {
+                        try {
+                            String name = txt.getText();
+                            networkController.addVertex(name);
+                            graphView.update();
+                        } catch (NumberFormatException nfe) {
+                            System.out.println("dsaDsadsadasdas");
+                        }
+                    }
+
                 }
                 if(function.equalsIgnoreCase("Remover Cidade")){
-                    String city = txt.getText();
-                    //adjacency.removeVertex(adjacency.getVertexByName(city));
+                    if (txt.getText().isEmpty()) {
+                        error("Missing product information.");
+                    } else {
+                        try {
+                            String name = txt.getText();
+                            //networkController.removeVertex(name);
+                            graphView.update();
+                        } catch (NumberFormatException nfe) {
+                            System.out.println("dsaDsadsadasdas");
+                        }
+                    }
                 }
                 if(function.equalsIgnoreCase("Remover Caminho")){
                     String path = txt.getText();
-                    //adjacency.removeEdge(adjacency.getEdgeByName(path));
+                    network.removeRoute(path);
                 }
-
-            }
-        });
-        voltar.setOnAction(new EventHandler< ActionEvent >() {
-            @Override
-            public void handle(ActionEvent event) {
                 stage1.close();
             }
         });
+        voltar.setOnAction(event -> stage1.close());
         root1.setAlignment(Pos.CENTER);
         root1.setMinSize(400, 200);
         root1.setPadding(new Insets(10, 10, 10, 10));
@@ -273,17 +301,13 @@ public class Menus{
                 if(function.equalsIgnoreCase("Adicionar Cidade")){
                     String p1 = txt1.getText();
                     String p2 = txt2.getText();
-                    //DijkstraResult result = dijkstra.calculateShortestPathFromOrigin(adjacency, adjacency.getVertexByName(p1),adjacency.getVertexByName(p2));
+                    DijkstraResult<Hub> result = dijkstra.calculateShortestPathFromOrigin(network.getGraph(), network.findHub(p1), network.findHub(p2));
 
                 }
-            }
-        });
-        voltar.setOnAction(new EventHandler< ActionEvent >() {
-            @Override
-            public void handle(ActionEvent event) {
                 stage1.close();
             }
         });
+        voltar.setOnAction(event -> stage1.close());
         root1.setAlignment(Pos.CENTER);
         root1.setMinSize(400, 200);
         root1.setPadding(new Insets(10, 10, 10, 10));

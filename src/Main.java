@@ -23,13 +23,7 @@ import pt.pa.model.Hub;
 import pt.pa.model.Route;
 import pt.pa.model.Network;
 
-import javax.naming.NamingEnumeration;
 import java.io.FileNotFoundException;
-import java.util.*;
-
-import java.awt.*;
-
-import static sun.management.Agent.error;
 
 
 public class Main extends Application {
@@ -45,87 +39,21 @@ public class Main extends Application {
         NetworkController networkController = new NetworkController(graphLoader);
 
 
-        Menus menu = new Menus();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Mudar para uma outra classe que será responsavel para a visualização do programa - por exemplo (MainScreenPanel)
+        // Mudar para uma outra classe que será responsavel para a visualização do programa - por exemplo (MainScreenPanel)
         BorderPane root = new BorderPane();
         VBox box = new VBox(30);
-
+        box.setBackground(new Background((new BackgroundFill(Color.AQUAMARINE, new CornerRadii(10), Insets.EMPTY))));
+        box.setFillWidth(true);
         SmartGraphProperties properties = new SmartGraphProperties();
         SmartGraphPanel<Hub, Route> graphView = new SmartGraphPanel<>(graph, properties, new SmartCircularSortedPlacementStrategy());
         SmartGraphDemoContainer smc = new SmartGraphDemoContainer(graphView);
 
+        Menus menu = new Menus(graph, graphView , graphLoader, networkController);
+
         root.setLeft(box);
         root.setCenter(smc);
 
-        VBox editButtons = new VBox(8);
-        Button addProductButton = new Button("Add");
-        Button editProductButton = new Button("Remove");
-        Button removeProductButton = new Button("Undo");
-        editButtons.getChildren().add(addProductButton);
-        editButtons.getChildren().add(editProductButton);
-        editButtons.getChildren().add(removeProductButton);
-        editButtons.setAlignment(Pos.TOP_CENTER);
-        editButtons.setPadding(new Insets(5));
-        editButtons.getStyleClass().add("color-palette");
-        editButtons.setMinHeight(768);
-
-
-
-        TextField textFieldProductName;
-
-        GridPane gridPaneAddProduct = new GridPane();
-        gridPaneAddProduct.add(new Label("Name"), 0, 1);
-        textFieldProductName = new TextField();
-        gridPaneAddProduct.add(textFieldProductName, 1, 1);
-
-
-        addProductButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                if (textFieldProductName.getText().isEmpty()) {
-                    error("Missing product information.");
-                } else {
-                    try {
-                        String name = textFieldProductName.getText();
-                        networkController.addVertex(name);
-                        graphView.update();
-                        System.out.println("TESTES DO ADD \n"+graphLoader.getGraph().vertices());
-                    } catch (NumberFormatException nfe) {
-                        System.out.println("dsaDsadsadasdas");
-                    }
-                }
-
-            }
-        });
-
-
-
-
-box.getChildren().add(textFieldProductName);
-
-
-        editButtons.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
-        editButtons.setBorder(new Border(new BorderStroke(Color.valueOf("#9E9E9E"),
-                BorderStrokeStyle.SOLID,
-                CornerRadii.EMPTY,
-                BorderWidths.DEFAULT)));
-
-        box.getChildren().add(editButtons);
+        box.getChildren().add(menu.Menu());
 
         primaryStage.setTitle("Produtos");
         primaryStage.setScene(new Scene(root, 1124, 768));
