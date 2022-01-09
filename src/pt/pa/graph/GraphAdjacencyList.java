@@ -4,7 +4,6 @@ import java.util.*;
 
 /* *****************************************************
     PA 2021/2022 EN - Rede de Logistica
-
     David Vaz - 201601644
     Guilherme Oliveira - 202000719
     Henrique Leote - 202001242
@@ -46,7 +45,7 @@ public class GraphAdjacencyList<V,E> implements Graph<V, E>{
     @Override
     public Collection<Edge<E, V>> edges() {
 
-      List<Edge<E,V>> edgeList = new ArrayList<>();
+        List<Edge<E,V>> edgeList = new ArrayList<>();
         for (Vertex<V> i:vertices.values()) {
             MyVertex myU = checkVertex(i);
             for (Edge<E,V> k:myU.incidentEdges) {
@@ -62,32 +61,6 @@ public class GraphAdjacencyList<V,E> implements Graph<V, E>{
         MyVertex vertex = checkVertex(v);
         return vertex.incidentEdges;
     }
-
-    public Map<Vertex<V>,Integer> hubsOrdered(){
-        Map<Vertex<V>,Integer> centrality = new HashMap<>();
-        for (Vertex<V> i:vertices.values()) {
-            centrality.put(i,incidentEdges(i).size());
-        }
-        Map<Vertex<V>, Integer> sortedMap = new LinkedHashMap<>();
-        for (Map.Entry<Vertex<V>, Integer> entry : sortValues(centrality)) sortedMap.put(entry.getKey(), entry.getValue());
-        return sortedMap;
-    }
-
-    private List<Map.Entry<Vertex<V>, Integer>> sortValues(Map<Vertex<V>,Integer> map){
-        List<Map.Entry<Vertex<V>, Integer>> list = new LinkedList<Map.Entry<Vertex<V>, Integer>>(map.entrySet());
-        Collections.sort(list, (o1, o2) -> (o1.getValue()).compareTo(o2.getValue()));
-        Collections.reverse(list);
-        return list;
-    }
-
-    public List<Map.Entry<Vertex<V>, Integer>> moreCentredHubs(Map<Vertex<V>,Integer> map){
-        List<Map.Entry<Vertex<V>, Integer>> five = new LinkedList<Map.Entry<Vertex<V>, Integer>>();
-        for(int i = 0; i<5; i++) {
-            five.add(sortValues(map).get(i));
-        }
-        return five;
-    }
-
 
     @Override
     public Vertex<V> opposite(Vertex<V> v, Edge<E, V> e) throws InvalidVertexException, InvalidEdgeException {
@@ -156,9 +129,14 @@ public class GraphAdjacencyList<V,E> implements Graph<V, E>{
 
     @Override
     public V removeVertex(Vertex<V> v) throws InvalidVertexException {
-        MyVertex myV = checkVertex(v);
-        vertices.remove(myV.element);
-        return myV.element;
+        MyVertex toRemoveVertex = checkVertex(v);
+        Set<Edge<E,V>> toRemoveEdges = new HashSet<>(toRemoveVertex.incidentEdges);
+        for(Edge<E,V> e : toRemoveEdges) {
+            MyVertex opVertex = checkVertex(opposite(v, e));
+            opVertex.incidentEdges.remove(e);
+        }
+        vertices.remove(v.element());
+        return toRemoveVertex.element;
     }
 
     @Override
@@ -176,8 +154,8 @@ public class GraphAdjacencyList<V,E> implements Graph<V, E>{
     public V replace(Vertex<V> v, V newElement) throws InvalidVertexException {
         if(newElement==null) throw new InvalidVertexException("Vertex element is null");
         MyVertex myV = checkVertex(v);
-       /*  vertices.replace(newElement,myV);*/
-       MyVertex myV1 = myV;
+        /*  vertices.replace(newElement,myV);*/
+        MyVertex myV1 = myV;
         myV.element = newElement;
 
         for (Vertex<V> i:vertices.values()) {
@@ -223,7 +201,7 @@ public class GraphAdjacencyList<V,E> implements Graph<V, E>{
         }
     }
 
-     private class MyEdge implements Edge<E, V> {
+    private class MyEdge implements Edge<E, V> {
         private E element;
 
         public MyEdge(E element) {

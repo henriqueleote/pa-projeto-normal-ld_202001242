@@ -7,9 +7,7 @@ import pt.pa.graph.Vertex;
 import pt.pa.observerpattern.*;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 
 public class Network extends Subject {
@@ -107,25 +105,53 @@ public class Network extends Subject {
 
     public Vertex<Hub> removeHub(String name){
         Vertex<Hub> vertexToRemove = findHub(name);
-        if(findHub(name) != null){
-            graph.removeVertex(findHub(name));
+        if(vertexToRemove != null){
+            graph.removeVertex(vertexToRemove);
+            notifyObservers(null);
+            return vertexToRemove;
         }
-        return vertexToRemove;
+        return null;
     }
 
     public void addRoute(String firstHubName, String secondHubName, int route) throws Exception {
         if(!existRoute(firstHubName, secondHubName)){
             graph.insertEdge(findHub(firstHubName), findHub(secondHubName) ,new Route(route));
+            notifyObservers(null);
         }
     }
 
-    public Vertex<Hub> removeRoute(String name){
-        Vertex<Hub> vertexToRemove = findHub(name);
-        if(findHub(name) != null){
-            graph.removeVertex(findHub(name));
+    public Edge<Route, Hub> removeRoute(String firstHubName, String secondHubName) throws Exception {
+        Edge<Route, Hub> routeToRemove = findRoute(firstHubName,secondHubName);
+        if(routeToRemove != null){
+            graph.removeEdge(routeToRemove);
+            notifyObservers(null);
+            return routeToRemove;
         }
-        return vertexToRemove;
+        return null;
     }
 
+    public Map<Vertex<Hub>,Integer> hubsOrdered(){
+        Map<Vertex<Hub>,Integer> centrality = new HashMap<>();
+        for (Vertex<Hub> i: graph.vertices()) {
+            centrality.put(i, graph.incidentEdges(i).size());
+        }
+        Map<Vertex<Hub>, Integer> sortedMap = new LinkedHashMap<>();
+        for (Map.Entry<Vertex<Hub>, Integer> entry : sortValues(centrality)) sortedMap.put(entry.getKey(), entry.getValue());
+        return sortedMap;
+    }
 
+    private List<Map.Entry<Vertex<Hub>, Integer>> sortValues(Map<Vertex<Hub>,Integer> map){
+        List<Map.Entry<Vertex<Hub>, Integer>> list = new LinkedList<>(map.entrySet());
+        Collections.sort(list, (o1, o2) -> (o1.getValue()).compareTo(o2.getValue()));
+        Collections.reverse(list);
+        return list;
+    }
+
+    public List<Map.Entry<Vertex<Hub>, Integer>> moreCentredHubs(Map<Vertex<Hub>,Integer> map){
+        List<Map.Entry<Vertex<Hub>, Integer>> five = new LinkedList<Map.Entry<Vertex<Hub>, Integer>>();
+        for(int i = 0; i<5; i++) {
+            five.add(sortValues(map).get(i));
+        }
+        return five;
+    }
 }

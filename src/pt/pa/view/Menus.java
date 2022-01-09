@@ -1,14 +1,12 @@
+package pt.pa.view;
+
 import com.brunomnsilva.smartgraph.graphview.SmartGraphPanel;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
-import javafx.scene.layout.GridPane;
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -42,7 +40,7 @@ public class Menus{
         this.network = network;
         this.networkController = networkController;
 
-        dijkstra = new Dijkstra();
+        dijkstra = new Dijkstra(network.getGraph());
         stage = new Stage();
         root = new GridPane();
     }
@@ -174,23 +172,18 @@ public class Menus{
         });
 
         /*
-
         //Ponto 3.1.7
         btn7.setOnAction(new EventHandler< ActionEvent >() {
             @Override
             public void handle(ActionEvent event) {
-
             }
         });
-
         //Exportar
         btn8.setOnAction(new EventHandler< ActionEvent >() {
             @Override
             public void handle(ActionEvent event) {
-
             }
         });
-
         */
 
         //Sair
@@ -200,7 +193,7 @@ public class Menus{
         root.setPadding(new Insets(10, 10, 10, 10));
         root.setVgap(20);
         root.setHgap(20);
-        root.add(btn1,1,7);
+        root.add(btn1,1,0);
         root.add(btn2,1,8);
         root.add(btn3,1,9);
         root.add(btn4,1,10);
@@ -234,14 +227,11 @@ public class Menus{
                         error("Missing product information.");
                     } else {
                         try {
-                            String name = txt.getText();
-                            networkController.addVertex(name);
-                            graphView.update();
+                            //networkController.addHub();
                         } catch (NumberFormatException nfe) {
                             System.out.println("dsaDsadsadasdas");
                         }
                     }
-
                 }
                 if(function.equalsIgnoreCase("Remover Cidade")){
                     if (txt.getText().isEmpty()) {
@@ -257,8 +247,7 @@ public class Menus{
                     }
                 }
                 if(function.equalsIgnoreCase("Remover Caminho")){
-                    String path = txt.getText();
-                    network.removeRoute(path);
+
                 }
                 stage1.close();
             }
@@ -301,7 +290,7 @@ public class Menus{
                 if(function.equalsIgnoreCase("Adicionar Cidade")){
                     String p1 = txt1.getText();
                     String p2 = txt2.getText();
-                    DijkstraResult<Hub> result = dijkstra.calculateShortestPathFromOrigin(network.getGraph(), network.findHub(p1), network.findHub(p2));
+                    DijkstraResult<Hub> result = dijkstra.calculateShortestPathFromOrigin(network.findHub(p1), network.findHub(p2));
 
                 }
                 stage1.close();
