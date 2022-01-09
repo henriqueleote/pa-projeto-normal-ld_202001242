@@ -21,6 +21,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import pt.pa.Command.NetworkController;
 import pt.pa.graph.Dijkstra;
+import pt.pa.graph.DijkstraResult;
 import pt.pa.graph.Vertex;
 import pt.pa.model.Hub;
 import pt.pa.model.Network;
@@ -35,11 +36,10 @@ public class NetworkView extends BorderPane implements NetworkUI{
 
     private Button btAddRoute;
     private Button btRemoveRoute;
+    private Button btUndo;
     private Button btAddGroupRelationship;
     private Button btAddClassRelationship;
     private Button btRemoveRelationship;
-    private Button submit;
-    private Button voltar;
     private Label lblError;
     private ComboBox<String> cbRoles;
     private ComboBox<String> cbPersonId1;
@@ -90,11 +90,10 @@ public class NetworkView extends BorderPane implements NetworkUI{
     public void setTriggers(NetworkController controller) {
         btAddRoute.setOnAction(event -> {
             controller.addRoute();
-
         });
 
         btRemoveRoute.setOnAction(event -> {
-            Alert alert = makeConfirmationDialog("Delete Relationship", "Are you sure?");
+            Alert alert = makeConfirmationDialog("Delete Route", "Are you sure?");
             alert.showAndWait().ifPresent(response -> {
 
                 if (response.getButtonData() == ButtonBar.ButtonData.YES) {
@@ -104,14 +103,15 @@ public class NetworkView extends BorderPane implements NetworkUI{
             });
         });
 
-        btRemoveRelationship.setOnAction(event -> {
-            Alert alert = makeConfirmationDialog("Delete Relationship", "Are you sure?");
-            alert.showAndWait().ifPresent(response -> {
-
-                if (response.getButtonData() == ButtonBar.ButtonData.YES) {
-                    //controller.doRemoveRelationShip();
+        btUndo.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                try {
+                    controller.undo();
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            });
+            }
         });
     }
 
@@ -192,12 +192,13 @@ public class NetworkView extends BorderPane implements NetworkUI{
         Button btn3 = new Button("Cálculo de métricas");
         Button btn4 = new Button("Curta Distancia");
         Button btn5 = new Button("Longa Distancia");
-        Button btn6 = new Button("Repor Grafo");
-        Button btn7 = new Button("3.1.7");
-        Button btn8 = new Button("Exportar");
+        Button btn6 = new Button("Repor Estilo");
+        Button btn7 = new Button("Undo");
+        Button btn8 = new Button("3.1.7");
+        Button btn9 = new Button("Exportar");
         Button btn0 = new Button("Sair");
 
-        Button[] btnArray = {btn0,btn1,btn2,btn3,btn4,btn5,btn6,btn7,btn8};
+        Button[] btnArray = {btn0,btn1,btn2,btn3,btn4,btn5,btn6,btn7,btn8,btn9};
 
         for(int i=0; i<btnArray.length; i++){
             btnArray[i].setBackground(new Background((new BackgroundFill(Color.WHITE, new CornerRadii(5), Insets.EMPTY))));
@@ -329,6 +330,64 @@ public class NetworkView extends BorderPane implements NetworkUI{
         });
 
         Dijkstra dijkstra = new Dijkstra(graph.getGraph());
+        btn4.setOnAction(new EventHandler< ActionEvent >() {
+            @Override
+            public void handle(ActionEvent event) {
+                GridPane root1 = new GridPane();
+                Stage stage1 = new Stage();
+                stage1.initModality(Modality.APPLICATION_MODAL);
+                Text title = new Text("Curta Distancia");
+                title.setFont(Font.font("Verdana", FontWeight.BOLD,20));
+                Text ponto1 = new Text("Ponto 1");
+                Text ponto2 = new Text("Ponto 2");
+                txtOriginHubName = new TextField();
+                txtDestinationHubName = new TextField();
+                Button submit = new Button("Submeter");
+                Button voltar = new Button("Voltar");
+                submit.setBackground(new Background((new BackgroundFill(Color.BLUE, new CornerRadii(10), Insets.EMPTY))));
+                voltar.setBackground(new Background((new BackgroundFill(Color.RED, new CornerRadii(10), Insets.EMPTY))));
+                submit.setTextFill(Color.WHITE);
+                voltar.setTextFill(Color.WHITE);
+                submit.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent event) {
+                        try {
+                            DijkstraResult<Hub> dijkstraResult = dijkstra.calculateShortestPathFromOrigin(graph.findHub(txtOriginHubName.getText()), graph.findHub(txtDestinationHubName.getText()));
+                            for (Vertex<Hub> i:dijkstraResult.getPath()) {
+                                graphView.getStylableVertex(i).setStyle("-fx-stroke: red; -fx-fill: red;");
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        stage1.close();
+                    }
+                });
+                voltar.setOnAction(new EventHandler< ActionEvent >() {
+                    @Override
+                    public void handle(ActionEvent event) {
+                        stage1.close();
+                    }
+                });
+                root1.setAlignment(Pos.CENTER);
+                root1.setMinSize(400, 200);
+                root1.setPadding(new Insets(10, 10, 10, 10));
+                root1.setVgap(5);
+                root1.setHgap(10);
+                root1.add(title,2,1);
+                root1.add(ponto1,1,2);
+                root1.add(txtOriginHubName,1,3,3,1);
+                root1.add(ponto2,1,4);
+                root1.add(txtDestinationHubName,1,5,3,1);
+                root1.add(voltar,1,8);
+                root1.add(submit,3,8);
+                scene = new Scene(root1);
+                stage1.setTitle("Remover Caminho");
+                stage1.setScene(scene);
+                stage1.show();
+            }
+        });
+
+
         btn5.setOnAction(new EventHandler< ActionEvent >() {
             @Override
             public void handle(ActionEvent event) {
@@ -342,13 +401,18 @@ public class NetworkView extends BorderPane implements NetworkUI{
         btn6.setOnAction(new EventHandler< ActionEvent >() {
             @Override
             public void handle(ActionEvent event) {
-                for (Vertex<Hub> i:dijkstra.farthestHubs().getPath()) {
+                for (Vertex<Hub> i: graph.getGraph().vertices()) {
                     graphView.getStylableVertex(i).setStyle("");
                 }
             }
         });
 
-
+        btn7.setOnAction(new EventHandler< ActionEvent >() {
+            @Override
+            public void handle(ActionEvent event) {
+                btUndo.fire();
+            }
+        });
         /* ADD PERSON CONTROLS */
         GridPane personPane = new GridPane();
         personPane.setAlignment(Pos.CENTER);
@@ -365,7 +429,8 @@ public class NetworkView extends BorderPane implements NetworkUI{
         personPane.add(btn6,1,5);
         personPane.add(btn7,1,6);
         personPane.add(btn8,1,7);
-        personPane.add(btn0,1,8);
+        personPane.add(btn9,1,8);
+        personPane.add(btn0,1,9);
         txtPersonName = new TextField("");
         cbRoles = new ComboBox<>();
         cbRoles.getItems().addAll("STUDENT", "TEACHER");
@@ -375,7 +440,7 @@ public class NetworkView extends BorderPane implements NetworkUI{
 
         btAddRoute = new Button("Add");
         btRemoveRoute = new Button("Remove");
-
+        btUndo = new Button("Undo");
 
         /* Relationship Controls */
         GridPane relationPane = new GridPane();
@@ -416,8 +481,6 @@ public class NetworkView extends BorderPane implements NetworkUI{
         pHelp.setWrapText(true);
         pHelp.setMaxWidth(200);
 
-
-
         VBox panel = new VBox(new Label(""),
                 personPane,
                 new Separator(),
@@ -440,8 +503,8 @@ public class NetworkView extends BorderPane implements NetworkUI{
         Text cidade = new Text("Cidade");
         txt = new TextField();
         stage1.initModality(Modality.APPLICATION_MODAL);
-        submit = new Button("Submeter");
-        voltar = new Button("Voltar");
+        Button submit = new Button("Submeter");
+        Button voltar = new Button("Voltar");
         submit.setBackground(new Background((new BackgroundFill(Color.BLUE, new CornerRadii(10), Insets.EMPTY))));
         voltar.setBackground(new Background((new BackgroundFill(Color.RED, new CornerRadii(10), Insets.EMPTY))));
         submit.setTextFill(Color.WHITE);

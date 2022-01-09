@@ -60,15 +60,6 @@ public class Main extends Application {
         view.initGraphDisplay();
 
 
-
-
-
-
-
-
-
-
-
 /*
 
 // Mudar para uma outra classe que será responsavel para a visualização do programa - por exemplo (MainScreenPanel)
