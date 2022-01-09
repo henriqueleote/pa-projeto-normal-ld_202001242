@@ -1,9 +1,7 @@
 package pt.pa.view;
 
-import com.brunomnsilva.smartgraph.graphview.SmartCircularSortedPlacementStrategy;
-import com.brunomnsilva.smartgraph.graphview.SmartGraphPanel;
-import com.brunomnsilva.smartgraph.graphview.SmartGraphVertex;
-import com.brunomnsilva.smartgraph.graphview.SmartGraphVertexNode;
+import com.brunomnsilva.smartgraph.containers.SmartGraphDemoContainer;
+import com.brunomnsilva.smartgraph.graphview.*;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -145,9 +143,10 @@ public class NetworkView extends BorderPane implements NetworkUI{
 
     private void createLayout() {
         /* CENTER PANEL */
-        graphView = new SmartGraphPanel<>(graph.getGraph(), new SmartCircularSortedPlacementStrategy());
-        //graphPanel.setAutomaticLayout(true);
-        setCenter(graphView);
+        SmartGraphProperties properties = new SmartGraphProperties();
+        graphView = new SmartGraphPanel<>(graph.getGraph(),properties,  new SmartCircularSortedPlacementStrategy());
+        SmartGraphDemoContainer smc = new SmartGraphDemoContainer(graphView);
+        setCenter(smc);
 
         /* RIGHT PANEL */
         setRight(createSidePanel());
