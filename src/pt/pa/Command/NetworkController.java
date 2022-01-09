@@ -24,6 +24,7 @@ public class NetworkController {
         this.cart.addObserver(this.view);
     }
 
+
     public void addRoute(){
         try {
             String origin = view.getOriginHubName();
@@ -43,7 +44,6 @@ public class NetworkController {
             commandmanager.executeCommand(c);
             view.clearError();
             view.clearControls();
-
         } catch (Exception e) {
             this.view.displayError( e.getMessage() );
         }
@@ -67,20 +67,6 @@ public class NetworkController {
             this.view.displayError( e.getMessage() );
         }
     }
-
-/*
-    public void reset() {
-        Command c = new ResetCommand(cart);
-        commandmanager.executeCommand(c);
-    }
-    public void removeProduct(String name) {
-        Command c = new RemoveCommand(cart,name);
-        commandmanager.executeCommand(c);
-    }
-    public Collection<Product> getProducts() {
-        return cart.getProducts();
-    }
-*/
 
     public void undo() throws Exception {
         commandmanager.undo();

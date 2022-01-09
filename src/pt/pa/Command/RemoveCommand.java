@@ -35,9 +35,8 @@ public class RemoveCommand implements Command{
         List<Vertex<Hub>> aux = new ArrayList<>();
 
         for(Vertex<Hub> v: removeProduct.vertices()){
-            aux.add(v);
+           aux.add(v);
         }
         cart.addRoute(aux.get(0).element().getName(), aux.get(1).element().getName(), removeProduct.element().getRoute());
-
     }
 }
