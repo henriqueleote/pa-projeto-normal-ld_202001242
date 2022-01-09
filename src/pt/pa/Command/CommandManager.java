@@ -15,8 +15,9 @@ public class CommandManager {
     }
 
     public void undo() throws Exception {
-        if (commands.empty())
-            throw new Exception("dsadsa");
+        if (commands.empty()){
+            throw new Exception("Commands history is empty");
+        }
         Command cmd = commands.pop();
         cmd.unExecute();
     }

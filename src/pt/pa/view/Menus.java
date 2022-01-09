@@ -314,5 +314,4 @@ public class Menus{
         stage1.setScene(scene1);
         stage1.show();
     }
-
 }
