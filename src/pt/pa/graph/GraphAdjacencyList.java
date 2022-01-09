@@ -4,7 +4,6 @@ import java.util.*;
 
 /* *****************************************************
     PA 2021/2022 EN - Rede de Logistica
-
     David Vaz - 201601644
     Guilherme Oliveira - 202000719
     Henrique Leote - 202001242
@@ -46,7 +45,7 @@ public class GraphAdjacencyList<V,E> implements Graph<V, E>{
     @Override
     public Collection<Edge<E, V>> edges() {
 
-      List<Edge<E,V>> edgeList = new ArrayList<>();
+        List<Edge<E,V>> edgeList = new ArrayList<>();
         for (Vertex<V> i:vertices.values()) {
             MyVertex myU = checkVertex(i);
             for (Edge<E,V> k:myU.incidentEdges) {
@@ -155,8 +154,8 @@ public class GraphAdjacencyList<V,E> implements Graph<V, E>{
     public V replace(Vertex<V> v, V newElement) throws InvalidVertexException {
         if(newElement==null) throw new InvalidVertexException("Vertex element is null");
         MyVertex myV = checkVertex(v);
-       /*  vertices.replace(newElement,myV);*/
-       MyVertex myV1 = myV;
+        /*  vertices.replace(newElement,myV);*/
+        MyVertex myV1 = myV;
         myV.element = newElement;
 
         for (Vertex<V> i:vertices.values()) {
@@ -202,7 +201,7 @@ public class GraphAdjacencyList<V,E> implements Graph<V, E>{
         }
     }
 
-     private class MyEdge implements Edge<E, V> {
+    private class MyEdge implements Edge<E, V> {
         private E element;
 
         public MyEdge(E element) {

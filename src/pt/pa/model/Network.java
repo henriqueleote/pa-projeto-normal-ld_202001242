@@ -154,5 +154,4 @@ public class Network extends Subject {
         }
         return five;
     }
-
 }

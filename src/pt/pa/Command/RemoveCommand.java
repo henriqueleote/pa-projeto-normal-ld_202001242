@@ -38,6 +38,5 @@ public class RemoveCommand implements Command{
            aux.add(v);
         }
         cart.addRoute(aux.get(0).element().getName(), aux.get(1).element().getName(), removeProduct.element().getRoute());
-
     }
 }

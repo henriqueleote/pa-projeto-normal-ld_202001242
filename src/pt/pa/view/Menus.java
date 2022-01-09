@@ -172,23 +172,18 @@ public class Menus{
         });
 
         /*
-
         //Ponto 3.1.7
         btn7.setOnAction(new EventHandler< ActionEvent >() {
             @Override
             public void handle(ActionEvent event) {
-
             }
         });
-
         //Exportar
         btn8.setOnAction(new EventHandler< ActionEvent >() {
             @Override
             public void handle(ActionEvent event) {
-
             }
         });
-
         */
 
         //Sair
@@ -319,5 +314,4 @@ public class Menus{
         stage1.setScene(scene1);
         stage1.show();
     }
-
 }

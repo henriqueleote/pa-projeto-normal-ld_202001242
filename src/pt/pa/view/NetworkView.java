@@ -40,6 +40,8 @@ public class NetworkView extends BorderPane implements NetworkUI{
     private Button btAddGroupRelationship;
     private Button btAddClassRelationship;
     private Button btRemoveRelationship;
+    private Button submit;
+    private Button voltar;
     private Label lblError;
     private ComboBox<String> cbRoles;
     private ComboBox<String> cbPersonId1;
@@ -88,7 +90,7 @@ public class NetworkView extends BorderPane implements NetworkUI{
 
     @Override
     public void setTriggers(NetworkController controller) {
-        btAddRoute.setOnAction(event -> {
+       btAddRoute.setOnAction(event -> {
             controller.addRoute();
         });
 
@@ -160,8 +162,7 @@ public class NetworkView extends BorderPane implements NetworkUI{
         /* bind double click on vertex */
         graphView.setVertexDoubleClickAction((SmartGraphVertex<Hub> graphVertex) -> {
             //Fill the person id textfield with the selected person's id
-
-                System.out.println(graphVertex.getPositionCenterX() +"  "+ graphVertex.getPositionCenterY());
+            System.out.println(graphVertex.getPositionCenterX() +"  "+ graphVertex.getPositionCenterY());
 
             txtPersonName.setText( String.valueOf( graphVertex.getUnderlyingVertex().element().getName()) );
         });
@@ -185,7 +186,7 @@ public class NetworkView extends BorderPane implements NetworkUI{
         });
     }
 
-    private VBox createSidePanel() {
+ private VBox createSidePanel() {
 
         Button btn1 = new Button("Adicionar Caminho");
         Button btn2 = new Button("Remover Caminho");
