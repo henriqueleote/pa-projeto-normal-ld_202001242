@@ -24,6 +24,8 @@
 package pt.pa.graph;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A graph is made up of a set of vertices connected by edges, where the edges 

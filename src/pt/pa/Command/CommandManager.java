@@ -9,7 +9,7 @@ public class CommandManager {
         commands = new Stack();
     }
 
-    public void executeCommand(Command command){
+    public void executeCommand(Command command) throws Exception {
         command.execute();
         commands.push(command);
     }

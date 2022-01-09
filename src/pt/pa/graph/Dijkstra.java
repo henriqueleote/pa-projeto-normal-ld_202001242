@@ -1,5 +1,8 @@
 package pt.pa.graph;
 
+import com.brunomnsilva.smartgraph.graphview.SmartCircularSortedPlacementStrategy;
+import com.brunomnsilva.smartgraph.graphview.SmartGraphPanel;
+import com.brunomnsilva.smartgraph.graphview.SmartGraphProperties;
 import pt.pa.model.Hub;
 import pt.pa.model.Route;
 
@@ -8,10 +11,16 @@ import java.util.*;
 public class Dijkstra {
 
     /*
-     * 6 - Cálculo de caminhos mais curtos entre um par de hubs
+     * 6 - CÃ¡lculo de caminhos mais curtos entre um par de hubs
      */
 
-    public static DijkstraResult<Hub> calculateShortestPathFromOrigin(Graph<Hub, Route> graph, Vertex<Hub> origin, Vertex<Hub> dest) {
+    private Graph<Hub, Route> graph;
+
+    public Dijkstra(Graph<Hub, Route> graph) {
+        this.graph=graph;
+    }
+
+    public  DijkstraResult<Hub> calculateShortestPathFromOrigin(Vertex<Hub> origin, Vertex<Hub> dest) {
         Map<Vertex<Hub>, Double> minDist = new HashMap<>();
         Map<Vertex<Hub>, Vertex<Hub>> predecessors = new HashMap<>();
         List<Vertex<Hub>> unvisited = new ArrayList<>();
@@ -20,6 +29,7 @@ public class Dijkstra {
             predecessors.put(v, null);
             minDist.put(v, Double.MAX_VALUE);
         }
+
         minDist.put(origin, 0.0);
 
         while(!unvisited.isEmpty()){
@@ -39,7 +49,6 @@ public class Dijkstra {
                     }
                 }
             }
-
             unvisited.remove(currentV);
         }
         Double cost = minDist.get(dest);
@@ -65,7 +74,7 @@ public class Dijkstra {
     }
 
 
-    public static Vertex<Hub> findMinCostVertex(Map<Vertex<Hub>, Double> distances, List<Vertex<Hub>> unvisited)
+    public Vertex<Hub> findMinCostVertex(Map<Vertex<Hub>, Double> distances, List<Vertex<Hub>> unvisited)
     {
         Vertex<Hub> minCostVertex = null;
         double minCostValue = Double.MAX_VALUE;
@@ -73,32 +82,35 @@ public class Dijkstra {
         for(Vertex<Hub> v : unvisited)
         {
             Double distV = distances.get(v);
-            if(distV < minCostValue)
-            {
+            if(distV < minCostValue) {
                 minCostValue = distV;;
                 minCostVertex = v;
             }
         }
-
+        if(minCostVertex == null){
+            return unvisited.get(0);
+        }
         return minCostVertex;
     }
     /*
      * 7 - Par de hubs mais distante
      */
-    public static DijkstraResult<Hub> farthestHubs(Graph<Hub, Route> graph){
+    public DijkstraResult<Hub> farthestHubs(){
         double cost=0;
         List<Vertex<Hub>> listV = new ArrayList<>();
         for (Vertex<Hub> i:graph.vertices()) {
             for (Vertex<Hub> k:graph.vertices()) {
-                if(calculateShortestPathFromOrigin(graph,i,k).cost>cost){
-                    cost=calculateShortestPathFromOrigin(graph,i,k).cost;
-                    listV.clear();
-                    listV.add(i);
-                    listV.add(k);
+                if(i != k){
+                    if(calculateShortestPathFromOrigin(i,k).cost>cost && calculateShortestPathFromOrigin(i,k).cost != Double.MAX_VALUE){
+                        cost=calculateShortestPathFromOrigin(i,k).cost;
+                        listV.clear();
+                        listV.add(i);
+                        listV.add(k);
+                    }
                 }
             }
 
         }
-        return new DijkstraResult<Hub>(cost, calculateShortestPathFromOrigin(graph,listV.get(0), listV.get(1)).path);
+        return new DijkstraResult<Hub>(cost, calculateShortestPathFromOrigin(listV.get(0), listV.get(1)).path);
     }
 }

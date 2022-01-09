@@ -1,20 +1,22 @@
 import com.brunomnsilva.smartgraph.containers.SmartGraphDemoContainer;
-import com.brunomnsilva.smartgraph.graphview.SmartCircularSortedPlacementStrategy;
-import com.brunomnsilva.smartgraph.graphview.SmartGraphPanel;
-import com.brunomnsilva.smartgraph.graphview.SmartGraphProperties;
-import com.brunomnsilva.smartgraph.graphview.SmartGraphVertex;
-import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
+import com.brunomnsilva.smartgraph.graphview.*;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import pt.pa.Command.NetworkController;
@@ -23,11 +25,11 @@ import pt.pa.model.Hub;
 import pt.pa.model.Route;
 import pt.pa.model.Network;
 
-import javax.naming.NamingEnumeration;
-import java.io.FileNotFoundException;
-import java.util.*;
+import pt.pa.view.NetworkView;
 
-import java.awt.*;
+import java.io.FileNotFoundException;
+import java.util.List;
+import java.util.Map;
 
 import static sun.management.Agent.error;
 
@@ -42,10 +44,20 @@ public class Main extends Application {
         Network graphLoader = new Network();
         graphLoader.loadFiles("dataset/sgb32/", "routes_1");
         Graph<Hub, Route> graph = graphLoader.getGraph();
-        NetworkController networkController = new NetworkController(graphLoader);
+        NetworkView view = new NetworkView(graphLoader);
+        NetworkController networkController = new NetworkController(graphLoader, view);
+
+        Scene scene = new Scene(view, 1300, 800);
 
 
-        Menus menu = new Menus();
+        Stage stage = new Stage(StageStyle.DECORATED);
+        stage.setTitle("University Network");
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.setScene(scene);
+        stage.setResizable(true);
+        stage.show();
+
+        view.initGraphDisplay();
 
 
 
@@ -57,9 +69,7 @@ public class Main extends Application {
 
 
 
-
-
-
+/*
 
 // Mudar para uma outra classe que será responsavel para a visualização do programa - por exemplo (MainScreenPanel)
         BorderPane root = new BorderPane();
@@ -102,7 +112,7 @@ public class Main extends Application {
                 } else {
                     try {
                         String name = textFieldProductName.getText();
-                        networkController.addVertex(name);
+                        networkController.addVertex();
                         graphView.update();
                         System.out.println("TESTES DO ADD \n"+graphLoader.getGraph().vertices());
                     } catch (NumberFormatException nfe) {
@@ -152,7 +162,7 @@ box.getChildren().add(textFieldProductName);
             } else{
                 graphEdge.removeStyleClass("myEdge");
             }
-        });
+        });*/
     }
 
 

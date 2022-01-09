@@ -5,22 +5,26 @@ import pt.pa.model.*;
 
 public class AddCommand implements Command{
     private Network cart;
-    private String name;
+    private String origin;
+    private String destination;
+    private int routeValue;
 
-    public AddCommand(Network cart, String name) {
+    public AddCommand(Network cart, String origin, String destination, int routeValue) {
         this.cart = cart;
-        this.name = name;
+        this.origin = origin;
+        this.destination = destination;
+        this.routeValue = routeValue;
     }
 
     @Override
-    public void execute() {
+    public void execute() throws Exception {
         System.out.println("EXECUTE ADD");
-        cart.addHub(name);
+        cart.addRoute(origin,destination,routeValue);
     }
 
     @Override
-    public void unExecute() {
-
+    public void unExecute() throws Exception {
+        cart.removeRoute(origin,destination);
     }
 
     /*

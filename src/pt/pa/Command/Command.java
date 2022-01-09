@@ -1,6 +1,6 @@
 package pt.pa.Command;
 
 public interface Command {
-    void execute();
-    void unExecute();
+    void execute() throws Exception;
+    void unExecute() throws Exception;
 }
