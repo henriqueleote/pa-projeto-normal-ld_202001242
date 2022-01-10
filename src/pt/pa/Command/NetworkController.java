@@ -39,7 +39,7 @@ public class NetworkController {
                 return;
             }
 
-            cart.addRoute(origin, destination, routeValue);
+
             Command c = new AddCommand(cart,origin,destination,routeValue);
             commandmanager.executeCommand(c);
             view.clearError();
@@ -57,7 +57,7 @@ public class NetworkController {
                 this.view.displayError("The name connot be empty");
                 return;
             }
-            cart.removeRoute(origin, destination);
+
             Command c = new RemoveCommand(cart,origin, destination);
             commandmanager.executeCommand(c);
             view.clearError();

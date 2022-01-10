@@ -32,11 +32,7 @@ public class RemoveCommand implements Command{
 
     @Override
     public void unExecute() throws Exception {
-        List<Vertex<Hub>> aux = new ArrayList<>();
 
-        for(Vertex<Hub> v: removeProduct.vertices()){
-            aux.add(v);
-        }
-        cart.addRoute(aux.get(0).element().getName(), aux.get(1).element().getName(), removeProduct.element().getRoute());
+        cart.addRoute(origin, destination, removeProduct.element().getRoute());
     }
 }
