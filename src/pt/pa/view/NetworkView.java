@@ -550,12 +550,6 @@ public class NetworkView extends BorderPane implements NetworkUI{
 
         /* STATS */
 
-        // Label labelCount = new Label("Number of Hubs: ");
-        //labelCount.setStyle("-fx-font-weight: bold;");
-        //Label labelPopular = new Label("Number of Routes: ");
-        //labelPopular.setStyle("-fx-font-wight: bold;");
-
-
         lblCost = new Label("Cost");
         lblNumberOfHubs = new Label("Number of Hubs: " + String.valueOf(graph.size()));
         lblNumberOfRoutes = new Label("Number of Routes: " + String.valueOf(graph.getGraph().numEdges()));
