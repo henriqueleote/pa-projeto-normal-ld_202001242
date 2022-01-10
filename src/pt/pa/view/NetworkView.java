@@ -38,9 +38,8 @@ public class NetworkView extends BorderPane implements NetworkUI{
     private Button btAddGroupRelationship;
     private Button btAddClassRelationship;
     private Button btRemoveRelationship;
-    private Button submit;
-    private Button voltar;
     private Label lblError;
+    private Label labelCost;
     private ComboBox<String> cbRoles;
     private ComboBox<String> cbPersonId1;
     private ComboBox<String> cbPersonId2;
@@ -54,6 +53,7 @@ public class NetworkView extends BorderPane implements NetworkUI{
 
     private Label lblNumberOfHubs;
     private Label lblNumberOfRoutes;
+    private Label lblCost;
 
     public NetworkView(Network graph) {
         this.graph = graph;
@@ -144,7 +144,7 @@ public class NetworkView extends BorderPane implements NetworkUI{
     private void createLayout() {
         /* CENTER PANEL */
         SmartGraphProperties properties = new SmartGraphProperties();
-        graphView = new SmartGraphPanel<>(graph.getGraph(),properties,  new SmartCircularSortedPlacementStrategy());
+        graphView = new SmartGraphPanel<>(graph.getGraph(), properties,  new SmartCircularSortedPlacementStrategy());
         SmartGraphDemoContainer smc = new SmartGraphDemoContainer(graphView);
         setCenter(smc);
 
@@ -161,6 +161,7 @@ public class NetworkView extends BorderPane implements NetworkUI{
         /* bind double click on vertex */
         graphView.setVertexDoubleClickAction((SmartGraphVertex<Hub> graphVertex) -> {
             //Fill the person id textfield with the selected person's id
+
             System.out.println(graphVertex.getPositionCenterX() +"  "+ graphVertex.getPositionCenterY());
 
             txtPersonName.setText( String.valueOf( graphVertex.getUnderlyingVertex().element().getName()) );
@@ -356,6 +357,8 @@ public class NetworkView extends BorderPane implements NetworkUI{
                             for (Vertex<Hub> i:dijkstraResult.getPath()) {
                                 graphView.getStylableVertex(i).setStyle("-fx-stroke: red; -fx-fill: red;");
                             }
+                            labelCost.setVisible(true);
+                            lblCost.setText(String.valueOf(dijkstraResult.getCost()));
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -404,6 +407,8 @@ public class NetworkView extends BorderPane implements NetworkUI{
                 for (Vertex<Hub> i: graph.getGraph().vertices()) {
                     graphView.getStylableVertex(i).setStyle("");
                 }
+                labelCost.setVisible(false);
+                lblCost.setText("");
             }
         });
 
@@ -469,9 +474,13 @@ public class NetworkView extends BorderPane implements NetworkUI{
         labelCount.setStyle("-fx-font-weight: bold;");
         Label labelPopular = new Label("Number of Routes: ");
         labelPopular.setStyle("-fx-font-weight: bold;");
+        labelCost = new Label("Cost");
+        labelCost.setStyle("-fx-font-weight: bold;");
+        labelCost.setVisible(false);
         lblNumberOfHubs = new Label(String.valueOf(graph.size()));
         lblNumberOfRoutes = new Label(String.valueOf(graph.getGraph().numEdges()));
-        VBox statsPane = new VBox(labelCount, lblNumberOfHubs, labelPopular, lblNumberOfRoutes);
+        lblCost = new Label();
+        VBox statsPane = new VBox(labelCount, lblNumberOfHubs, labelPopular, lblNumberOfRoutes, labelCost, lblCost);
         statsPane.setSpacing(10);
 
         /* COMPOSE */
