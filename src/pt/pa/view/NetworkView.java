@@ -53,6 +53,7 @@ public class NetworkView extends BorderPane implements NetworkUI{
     private TextField txtDestinationHubName;
     private TextField txtRouteValue;
 
+    private Label lblCost;
     private Label lblNumberOfHubs;
     private Label lblNumberOfRoutes;
 
@@ -92,7 +93,7 @@ public class NetworkView extends BorderPane implements NetworkUI{
         });
 
         btRemoveRoute.setOnAction(event -> {
-            Alert alert = makeConfirmationDialog("Delete Route", "Are you sure?");
+            Alert alert = makeConfirmationDialog("Remover caminho", "Tem a certeza que quer remover?");
             alert.showAndWait().ifPresent(response -> {
 
                 if (response.getButtonData() == ButtonBar.ButtonData.YES) {
@@ -118,8 +119,8 @@ public class NetworkView extends BorderPane implements NetworkUI{
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle(title);
         alert.setContentText(text);
-        ButtonType yesButton = new ButtonType("Yes", ButtonBar.ButtonData.YES);
-        ButtonType noButton = new ButtonType("No", ButtonBar.ButtonData.NO);
+        ButtonType yesButton = new ButtonType("Sim", ButtonBar.ButtonData.YES);
+        ButtonType noButton = new ButtonType("Não", ButtonBar.ButtonData.NO);
         alert.getButtonTypes().setAll(yesButton, noButton);
         return alert;
     }
@@ -385,21 +386,55 @@ public class NetworkView extends BorderPane implements NetworkUI{
         btn4.setOnAction(new EventHandler< ActionEvent >() {
             @Override
             public void handle(ActionEvent event) {
-                GridPane root1 = new GridPane();
+                StackPane root1 = new StackPane();
                 Stage stage1 = new Stage();
                 stage1.initModality(Modality.APPLICATION_MODAL);
-                Text title = new Text("Curta Distancia");
-                title.setFont(Font.font("Verdana", FontWeight.BOLD,20));
-                Text ponto1 = new Text("Ponto 1");
-                Text ponto2 = new Text("Ponto 2");
+
+                Text title = new Text("Curta Distância");
+                Text ponto1Lbl = new Text("Ponto 1");
+                Text ponto2Lbl = new Text("Ponto 2");
+                submit = new Button("Submeter");
+                voltar = new Button("Voltar");
+
                 txtOriginHubName = new TextField();
                 txtDestinationHubName = new TextField();
-                Button submit = new Button("Submeter");
-                Button voltar = new Button("Voltar");
-                submit.setBackground(new Background((new BackgroundFill(Color.BLUE, new CornerRadii(10), Insets.EMPTY))));
+                txtOriginHubName.setMaxWidth(200);
+                txtDestinationHubName.setMaxWidth(200);
+
+                title.setFont(Font.font("Arial", FontWeight.BOLD,20));
+                title.setTranslateX(0);
+                title.setTranslateY(-100);
+
+                ponto1Lbl.setTranslateX(-75);
+                ponto1Lbl.setTranslateY(-50);
+                txtOriginHubName.setTranslateX(0);
+                txtOriginHubName.setTranslateY(-20);
+
+                ponto2Lbl.setTranslateX(-75);
+                ponto2Lbl.setTranslateY(10);
+                txtDestinationHubName.setTranslateX(0);
+                txtDestinationHubName.setTranslateY(40);
+
+                voltar.setTranslateX(-60);
+                voltar.setTranslateY(80);
+                submit.setTranslateX(60);
+                submit.setTranslateY(80);
+
                 voltar.setBackground(new Background((new BackgroundFill(Color.RED, new CornerRadii(10), Insets.EMPTY))));
-                submit.setTextFill(Color.WHITE);
+                voltar.setMaxWidth(80);
                 voltar.setTextFill(Color.WHITE);
+                voltar.setFocusTraversable(false);
+
+
+                submit.setBackground(new Background((new BackgroundFill(Color.BLUE, new CornerRadii(10), Insets.EMPTY))));
+                submit.setMaxWidth(80);
+                submit.setTextFill(Color.WHITE);
+                submit.setFocusTraversable(false);
+
+
+                root1.getChildren().addAll(title,ponto1Lbl,txtOriginHubName,ponto2Lbl,txtDestinationHubName,submit,voltar);
+
+
                 submit.setOnAction(new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(ActionEvent event) {
@@ -408,6 +443,9 @@ public class NetworkView extends BorderPane implements NetworkUI{
                             for (Vertex<Hub> i:dijkstraResult.getPath()) {
                                 graphView.getStylableVertex(i).setStyle("-fx-stroke: red; -fx-fill: red;");
                             }
+                            lblCost.setVisible(true);
+                            lblCost.setTextFill(Color.DARKGREEN);
+                            lblCost.setText("Custo: " + String.valueOf(dijkstraResult.getCost()));
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -420,20 +458,11 @@ public class NetworkView extends BorderPane implements NetworkUI{
                         stage1.close();
                     }
                 });
-                root1.setAlignment(Pos.CENTER);
-                root1.setMinSize(400, 200);
-                root1.setPadding(new Insets(10, 10, 10, 10));
-                root1.setVgap(5);
-                root1.setHgap(10);
-                root1.add(title,2,1);
-                root1.add(ponto1,1,2);
-                root1.add(txtOriginHubName,1,3,3,1);
-                root1.add(ponto2,1,4);
-                root1.add(txtDestinationHubName,1,5,3,1);
-                root1.add(voltar,1,8);
-                root1.add(submit,3,8);
-                scene = new Scene(root1);
-                stage1.setTitle("Remover Caminho");
+
+
+                scene = new Scene(root1, 400, 260);
+                stage1.setTitle("Curta Distância");
+                stage1.setResizable(false);
                 stage1.setScene(scene);
                 stage1.show();
             }
@@ -520,13 +549,18 @@ public class NetworkView extends BorderPane implements NetworkUI{
 
 
         /* STATS */
+
         // Label labelCount = new Label("Number of Hubs: ");
         //labelCount.setStyle("-fx-font-weight: bold;");
         //Label labelPopular = new Label("Number of Routes: ");
         //labelPopular.setStyle("-fx-font-wight: bold;");
+
+
+        lblCost = new Label("Cost");
         lblNumberOfHubs = new Label("Number of Hubs: " + String.valueOf(graph.size()));
         lblNumberOfRoutes = new Label("Number of Routes: " + String.valueOf(graph.getGraph().numEdges()));
-        VBox statsPane = new VBox(lblNumberOfHubs, lblNumberOfRoutes);
+        lblCost.setVisible(false);
+        VBox statsPane = new VBox(lblNumberOfHubs, lblNumberOfRoutes, lblCost);
         statsPane.setSpacing(10);
 
         /* COMPOSE */
