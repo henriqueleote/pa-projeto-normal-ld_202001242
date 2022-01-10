@@ -1,4 +1,4 @@
-# Projeto PA 2021/22 - Época Normal (Projeto Funciona)
+# Projeto PA 2021/22 - Época Normal (Projeto Funcional)
 
 Este ficheiro contém um resumo do trabalho / código desenvolvido.
 
@@ -22,6 +22,7 @@ Não foi implementado com sucesso a funcionalidade da exportação de rotas (mat
 
 
 
-### Demonstração da Milestone
+### Demonstração do Projeto Funcional
 ![](network.png)
+Como pode ser visto na imagem de demonstração, foi adicionado uma rota entre os hubs "Weed, CA" e "Yankton, SD", e do lado esquerdo, aparece o custo de 1.
 
