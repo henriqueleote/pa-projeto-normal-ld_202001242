@@ -54,7 +54,7 @@ public class Main extends Application {
         stage.setTitle("University Network");
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.setScene(scene);
-        stage.setResizable(true);
+        stage.setResizable(false);
         stage.show();
 
         view.initGraphDisplay();

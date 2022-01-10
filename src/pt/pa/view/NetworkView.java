@@ -14,6 +14,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -38,8 +39,9 @@ public class NetworkView extends BorderPane implements NetworkUI{
     private Button btAddGroupRelationship;
     private Button btAddClassRelationship;
     private Button btRemoveRelationship;
+    private Button submit;
+    private Button voltar;
     private Label lblError;
-    private Label labelCost;
     private ComboBox<String> cbRoles;
     private ComboBox<String> cbPersonId1;
     private ComboBox<String> cbPersonId2;
@@ -53,7 +55,6 @@ public class NetworkView extends BorderPane implements NetworkUI{
 
     private Label lblNumberOfHubs;
     private Label lblNumberOfRoutes;
-    private Label lblCost;
 
     public NetworkView(Network graph) {
         this.graph = graph;
@@ -64,12 +65,10 @@ public class NetworkView extends BorderPane implements NetworkUI{
     public void update(Observable subject, Object arg) {
         if(subject == graph) {
             graphView.update();
-
-            lblNumberOfHubs.setText(String.valueOf(graph.size()));
-            lblNumberOfRoutes.setText(String.valueOf(graph.getGraph().numEdges()));
+            lblNumberOfHubs.setText("Número de Hubs: " + String.valueOf(graph.size()));
+            lblNumberOfRoutes.setText("Número de Caminhos: " + String.valueOf(graph.getGraph().numEdges()));
         }
     }
-
 
     @Override
     public String getOriginHubName() {
@@ -144,24 +143,23 @@ public class NetworkView extends BorderPane implements NetworkUI{
     private void createLayout() {
         /* CENTER PANEL */
         SmartGraphProperties properties = new SmartGraphProperties();
-        graphView = new SmartGraphPanel<>(graph.getGraph(), properties,  new SmartCircularSortedPlacementStrategy());
+        graphView = new SmartGraphPanel<>(graph.getGraph(),properties,  new SmartCircularSortedPlacementStrategy());
         SmartGraphDemoContainer smc = new SmartGraphDemoContainer(graphView);
         setCenter(smc);
 
-        /* RIGHT PANEL */
-        setRight(createSidePanel());
+        /* LEFT PANEL */
+        setLeft(createSidePanel());
 
-        /* BOTTOM */
+        /* BOTTOM PANEL */
         lblError = new Label("Ready");
         HBox bottom = new HBox(lblError);
         bottom.setPadding(new Insets(10, 10, 10, 10));
         setBottom(bottom);
-        bottom.setBackground(new Background((new BackgroundFill(Color.AQUAMARINE, new CornerRadii(10,0,0,0,false), Insets.EMPTY))));
+        bottom.setBackground(new Background((new BackgroundFill(Color.LIGHTGREY, new CornerRadii(0,0,0,0,false), Insets.EMPTY))));
         bottom.setFillHeight(true);
         /* bind double click on vertex */
         graphView.setVertexDoubleClickAction((SmartGraphVertex<Hub> graphVertex) -> {
             //Fill the person id textfield with the selected person's id
-
             System.out.println(graphVertex.getPositionCenterX() +"  "+ graphVertex.getPositionCenterY());
 
             txtPersonName.setText( String.valueOf( graphVertex.getUnderlyingVertex().element().getName()) );
@@ -202,33 +200,73 @@ public class NetworkView extends BorderPane implements NetworkUI{
         Button[] btnArray = {btn0,btn1,btn2,btn3,btn4,btn5,btn6,btn7,btn8,btn9};
 
         for(int i=0; i<btnArray.length; i++){
-            btnArray[i].setBackground(new Background((new BackgroundFill(Color.WHITE, new CornerRadii(5), Insets.EMPTY))));
-            btnArray[i].setStyle("-fx-border-color:black;"+"-fx-border-width: 1 1 1 1;" + "-fx-border-radius: 5;");
+            btnArray[i].setBackground(new Background((new BackgroundFill(Color.WHITE, new CornerRadii(0), Insets.EMPTY))));
+            btnArray[i].setMaxWidth(150);
+            btnArray[i].setStyle("-fx-border-color:grey;"+ "-fx-border-radius: 10;"+"-fx-background-radius: 10;"+"-fx-border-radius: 10;");
+            btnArray[i].setFocusTraversable(false);
         }
 
-
+        btn0.setOnAction(event -> System.exit(0));
 
         btn1.setOnAction(new EventHandler< ActionEvent >() {
             @Override
             public void handle(ActionEvent event) {
-                GridPane root1 = new GridPane();
-                Scene scene1;
+                StackPane root1 = new StackPane();
                 Stage stage1 = new Stage();
                 stage1.initModality(Modality.APPLICATION_MODAL);
-                Text title = new Text("Adicionar Caminho");
-                title.setFont(Font.font("Verdana", FontWeight.BOLD,20));
+
+                Text title = new Text("Adicionar caminho");
                 Text caminho = new Text("Caminho");
-                Text ponto1 = new Text("Ponto 1");
-                Text ponto2 = new Text("Ponto 2");
+                Text ponto1Lbl = new Text("Ponto 1");
+                Text ponto2Lbl = new Text("Ponto 2");
+                submit = new Button("Submeter");
+                voltar = new Button("Voltar");
+
                 txtOriginHubName = new TextField();
                 txtDestinationHubName = new TextField();
                 txtRouteValue = new TextField();
-                Button submit = new Button("Submeter");
-                Button voltar = new Button("Voltar");
-                submit.setBackground(new Background((new BackgroundFill(Color.BLUE, new CornerRadii(10), Insets.EMPTY))));
+                txtOriginHubName.setMaxWidth(200);
+                txtDestinationHubName.setMaxWidth(200);
+                txtRouteValue.setMaxWidth(200);
+
+                title.setFont(Font.font("Arial", FontWeight.BOLD,20));
+                title.setTranslateX(0);
+                title.setTranslateY(-120);
+
+                caminho.setTranslateX(-75);
+                caminho.setTranslateY(-70);
+                txtRouteValue.setTranslateX(0);
+                txtRouteValue.setTranslateY(-40);
+
+                ponto1Lbl.setTranslateX(-75);
+                ponto1Lbl.setTranslateY(-10);
+                txtOriginHubName.setTranslateX(0);
+                txtOriginHubName.setTranslateY(20);
+
+                ponto2Lbl.setTranslateX(-75);
+                ponto2Lbl.setTranslateY(50);
+                txtDestinationHubName.setTranslateX(0);
+                txtDestinationHubName.setTranslateY(80);
+
+                voltar.setTranslateX(-60);
+                voltar.setTranslateY(120);
+                submit.setTranslateX(60);
+                submit.setTranslateY(120);
+
                 voltar.setBackground(new Background((new BackgroundFill(Color.RED, new CornerRadii(10), Insets.EMPTY))));
-                submit.setTextFill(Color.WHITE);
+                voltar.setMaxWidth(80);
                 voltar.setTextFill(Color.WHITE);
+                voltar.setFocusTraversable(false);
+
+
+                submit.setBackground(new Background((new BackgroundFill(Color.BLUE, new CornerRadii(10), Insets.EMPTY))));
+                submit.setMaxWidth(80);
+                submit.setTextFill(Color.WHITE);
+                submit.setFocusTraversable(false);
+
+
+                root1.getChildren().addAll(title,caminho,txtRouteValue,ponto1Lbl,txtOriginHubName,ponto2Lbl,txtDestinationHubName,submit,voltar);
+
                 submit.setOnAction(new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(ActionEvent event) {
@@ -246,22 +284,10 @@ public class NetworkView extends BorderPane implements NetworkUI{
                         stage1.close();
                     }
                 });
-                root1.setAlignment(Pos.CENTER);
-                root1.setMinSize(400, 200);
-                root1.setPadding(new Insets(10, 10, 10, 10));
-                root1.setVgap(5);
-                root1.setHgap(10);
-                root1.add(title,2,1);
-                root1.add(ponto1,1,2);
-                root1.add(txtOriginHubName,1,3,3,1);
-                root1.add(ponto2,1,4);
-                root1.add(txtDestinationHubName,1,5,3,1);
-                root1.add(caminho,1,6);
-                root1.add(txtRouteValue,1,7,3,1);
-                root1.add(voltar,1,8);
-                root1.add(submit,3,8);
-                scene = new Scene(root1);
+
+                scene = new Scene(root1, 400, 330);
                 stage1.setTitle("Adicionar Caminho");
+                stage1.setResizable(false);
                 stage1.setScene(scene);
                 stage1.show();
             }
@@ -270,21 +296,55 @@ public class NetworkView extends BorderPane implements NetworkUI{
         btn2.setOnAction(new EventHandler< ActionEvent >() {
             @Override
             public void handle(ActionEvent event) {
-                GridPane root1 = new GridPane();
+
+                StackPane root1 = new StackPane();
                 Stage stage1 = new Stage();
                 stage1.initModality(Modality.APPLICATION_MODAL);
+
                 Text title = new Text("Remover Caminho");
-                title.setFont(Font.font("Verdana", FontWeight.BOLD,20));
-                Text ponto1 = new Text("Ponto 1");
-                Text ponto2 = new Text("Ponto 2");
+                Text ponto1Lbl = new Text("Ponto 1");
+                Text ponto2Lbl = new Text("Ponto 2");
+                submit = new Button("Submeter");
+                voltar = new Button("Voltar");
+
                 txtOriginHubName = new TextField();
                 txtDestinationHubName = new TextField();
-                Button submit = new Button("Submeter");
-                Button voltar = new Button("Voltar");
-                submit.setBackground(new Background((new BackgroundFill(Color.BLUE, new CornerRadii(10), Insets.EMPTY))));
+                txtOriginHubName.setMaxWidth(200);
+                txtDestinationHubName.setMaxWidth(200);
+
+                title.setFont(Font.font("Arial", FontWeight.BOLD,20));
+                title.setTranslateX(0);
+                title.setTranslateY(-100);
+
+                ponto1Lbl.setTranslateX(-75);
+                ponto1Lbl.setTranslateY(-50);
+                txtOriginHubName.setTranslateX(0);
+                txtOriginHubName.setTranslateY(-20);
+
+                ponto2Lbl.setTranslateX(-75);
+                ponto2Lbl.setTranslateY(10);
+                txtDestinationHubName.setTranslateX(0);
+                txtDestinationHubName.setTranslateY(40);
+
+                voltar.setTranslateX(-60);
+                voltar.setTranslateY(80);
+                submit.setTranslateX(60);
+                submit.setTranslateY(80);
+
                 voltar.setBackground(new Background((new BackgroundFill(Color.RED, new CornerRadii(10), Insets.EMPTY))));
-                submit.setTextFill(Color.WHITE);
+                voltar.setMaxWidth(80);
                 voltar.setTextFill(Color.WHITE);
+                voltar.setFocusTraversable(false);
+
+
+                submit.setBackground(new Background((new BackgroundFill(Color.BLUE, new CornerRadii(10), Insets.EMPTY))));
+                submit.setMaxWidth(80);
+                submit.setTextFill(Color.WHITE);
+                submit.setFocusTraversable(false);
+
+
+                root1.getChildren().addAll(title,ponto1Lbl,txtOriginHubName,ponto2Lbl,txtDestinationHubName,submit,voltar);
+
                 submit.setOnAction(new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(ActionEvent event) {
@@ -302,20 +362,10 @@ public class NetworkView extends BorderPane implements NetworkUI{
                         stage1.close();
                     }
                 });
-                root1.setAlignment(Pos.CENTER);
-                root1.setMinSize(400, 200);
-                root1.setPadding(new Insets(10, 10, 10, 10));
-                root1.setVgap(5);
-                root1.setHgap(10);
-                root1.add(title,2,1);
-                root1.add(ponto1,1,2);
-                root1.add(txtOriginHubName,1,3,3,1);
-                root1.add(ponto2,1,4);
-                root1.add(txtDestinationHubName,1,5,3,1);
-                root1.add(voltar,1,8);
-                root1.add(submit,3,8);
-                scene = new Scene(root1);
+
+                scene = new Scene(root1, 400, 260);
                 stage1.setTitle("Remover Caminho");
+                stage1.setResizable(false);
                 stage1.setScene(scene);
                 stage1.show();
             }
@@ -331,6 +381,7 @@ public class NetworkView extends BorderPane implements NetworkUI{
         });
 
         Dijkstra dijkstra = new Dijkstra(graph.getGraph());
+
         btn4.setOnAction(new EventHandler< ActionEvent >() {
             @Override
             public void handle(ActionEvent event) {
@@ -357,8 +408,6 @@ public class NetworkView extends BorderPane implements NetworkUI{
                             for (Vertex<Hub> i:dijkstraResult.getPath()) {
                                 graphView.getStylableVertex(i).setStyle("-fx-stroke: red; -fx-fill: red;");
                             }
-                            labelCost.setVisible(true);
-                            lblCost.setText(String.valueOf(dijkstraResult.getCost()));
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -390,7 +439,6 @@ public class NetworkView extends BorderPane implements NetworkUI{
             }
         });
 
-
         btn5.setOnAction(new EventHandler< ActionEvent >() {
             @Override
             public void handle(ActionEvent event) {
@@ -400,15 +448,12 @@ public class NetworkView extends BorderPane implements NetworkUI{
             }
         });
 
-
         btn6.setOnAction(new EventHandler< ActionEvent >() {
             @Override
             public void handle(ActionEvent event) {
                 for (Vertex<Hub> i: graph.getGraph().vertices()) {
                     graphView.getStylableVertex(i).setStyle("");
                 }
-                labelCost.setVisible(false);
-                lblCost.setText("");
             }
         });
 
@@ -418,6 +463,8 @@ public class NetworkView extends BorderPane implements NetworkUI{
                 btUndo.fire();
             }
         });
+
+
         /* ADD PERSON CONTROLS */
         GridPane personPane = new GridPane();
         personPane.setAlignment(Pos.CENTER);
@@ -436,6 +483,9 @@ public class NetworkView extends BorderPane implements NetworkUI{
         personPane.add(btn8,1,7);
         personPane.add(btn9,1,8);
         personPane.add(btn0,1,9);
+
+        btn8.setDisable(true);
+
         txtPersonName = new TextField("");
         cbRoles = new ComboBox<>();
         cbRoles.getItems().addAll("STUDENT", "TEACHER");
@@ -470,17 +520,13 @@ public class NetworkView extends BorderPane implements NetworkUI{
 
 
         /* STATS */
-        Label labelCount = new Label("Number of Hubs: ");
-        labelCount.setStyle("-fx-font-weight: bold;");
-        Label labelPopular = new Label("Number of Routes: ");
-        labelPopular.setStyle("-fx-font-weight: bold;");
-        labelCost = new Label("Cost");
-        labelCost.setStyle("-fx-font-weight: bold;");
-        labelCost.setVisible(false);
-        lblNumberOfHubs = new Label(String.valueOf(graph.size()));
-        lblNumberOfRoutes = new Label(String.valueOf(graph.getGraph().numEdges()));
-        lblCost = new Label();
-        VBox statsPane = new VBox(labelCount, lblNumberOfHubs, labelPopular, lblNumberOfRoutes, labelCost, lblCost);
+        // Label labelCount = new Label("Number of Hubs: ");
+        //labelCount.setStyle("-fx-font-weight: bold;");
+        //Label labelPopular = new Label("Number of Routes: ");
+        //labelPopular.setStyle("-fx-font-wight: bold;");
+        lblNumberOfHubs = new Label("Number of Hubs: " + String.valueOf(graph.size()));
+        lblNumberOfRoutes = new Label("Number of Routes: " + String.valueOf(graph.getGraph().numEdges()));
+        VBox statsPane = new VBox(lblNumberOfHubs, lblNumberOfRoutes);
         statsPane.setSpacing(10);
 
         /* COMPOSE */
@@ -490,14 +536,21 @@ public class NetworkView extends BorderPane implements NetworkUI{
         pHelp.setWrapText(true);
         pHelp.setMaxWidth(200);
 
-        VBox panel = new VBox(new Label(""),
+        Label title1 = new Label("Botões");
+        title1.setFont(Font.font("Arial", FontWeight.BOLD,15));
+        Label title2 = new Label("Estatísticas");
+        title2.setFont(Font.font("Arial", FontWeight.BOLD,15));
+        title1.setAlignment(Pos.CENTER);
+        title1.setTextAlignment(TextAlignment.CENTER);
+
+        VBox panel = new VBox(title1,
                 personPane,
                 new Separator(),
-                new Label("Statistics"),
+                title2,
                 statsPane);
         panel.setPadding(new Insets(10, 10, 10, 10));
         panel.setSpacing(10);
-        panel.setBackground(new Background((new BackgroundFill(Color.AQUAMARINE, new CornerRadii(10,0,0,0,false), Insets.EMPTY))));
+        panel.setBackground(new Background((new BackgroundFill(Color.LIGHTGREY, new CornerRadii(0,0,0,0,false), Insets.EMPTY))));
         panel.setFillWidth(true);
 
         return panel;
