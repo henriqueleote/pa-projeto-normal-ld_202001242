@@ -100,13 +100,11 @@ public class Dijkstra {
         List<Vertex<Hub>> listV = new ArrayList<>();
         for (Vertex<Hub> i:graph.vertices()) {
             for (Vertex<Hub> k:graph.vertices()) {
-                if(i != k){
-                    if(calculateShortestPathFromOrigin(i,k).cost>cost && calculateShortestPathFromOrigin(i,k).cost != Double.MAX_VALUE){
-                        cost=calculateShortestPathFromOrigin(i,k).cost;
-                        listV.clear();
-                        listV.add(i);
-                        listV.add(k);
-                    }
+                if(i != k && calculateShortestPathFromOrigin(i,k).cost>cost && calculateShortestPathFromOrigin(i,k).cost != Double.MAX_VALUE){
+                    cost=calculateShortestPathFromOrigin(i,k).cost;
+                    listV.clear();
+                    listV.add(i);
+                    listV.add(k);
                 }
             }
         }
