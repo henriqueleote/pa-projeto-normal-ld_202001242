@@ -11,7 +11,7 @@ import java.util.*;
 public class Dijkstra {
 
     /*
-     * 6 - CÃ¡lculo de caminhos mais curtos entre um par de hubs
+     * 6 -Calculo de caminhos mais curtos entre um par de hubs
      */
 
     private Graph<Hub, Route> graph;
@@ -109,7 +109,6 @@ public class Dijkstra {
                     }
                 }
             }
-
         }
         return new DijkstraResult<Hub>(cost, calculateShortestPathFromOrigin(listV.get(0), listV.get(1)).path);
     }
