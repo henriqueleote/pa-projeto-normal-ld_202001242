@@ -11,18 +11,8 @@ public class Route {
         counter = id;
     }
 
-    public static int getId() {
-        return id;
-    }
-    public int getCounter() {
-        return counter;
-    }  
     public int getRoute() {
         return route;
-    }
-
-    public void setRoute(int route) {
-        this.route = route;
     }
 
     @Override

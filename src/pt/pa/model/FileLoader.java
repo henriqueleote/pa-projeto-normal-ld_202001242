@@ -15,8 +15,8 @@ import static java.lang.Integer.parseInt;
 *
 * */
 public class FileLoader implements Serializable {
-    private  Map<Integer, Integer> coordinatesList;
-    private  ArrayList<Hub> hubList;
+    private final Map<Integer, Integer> coordinatesList;
+    private final ArrayList<Hub> hubList;
 
     public FileLoader(String folderName, String routeName) {
         this.hubList = new ArrayList<>();

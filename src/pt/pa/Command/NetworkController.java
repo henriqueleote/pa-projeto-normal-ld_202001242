@@ -70,8 +70,4 @@ public class NetworkController {
         System.out.println("UNDO");
     }
 
-    public String showAll() {
-        String str = cart.toString();
-        return str;
-    }
 }

@@ -11,7 +11,7 @@ import java.util.*;
 
 
 public class Network extends Subject {
-    private Graph<Hub, Route> graph;
+    private final Graph<Hub, Route> graph;
     private ArrayList<Hub> hubs;
     private FileLoader fm;
     public Network() {
@@ -19,12 +19,12 @@ public class Network extends Subject {
         hubs = new ArrayList<>();
     }
 
-    public void loadFiles (String foldername, String routeFileName) throws FileNotFoundException{
+    public void loadFiles (String foldername, String routeFileName) {
         this.fm = new FileLoader(foldername, routeFileName);
-        this.inicializeGraph(foldername, routeFileName);
+        this.initializeGraph(foldername, routeFileName);
     }
 
-    private void inicializeGraph(String foldername, String routeFileName){
+    private void initializeGraph(String foldername, String routeFileName){
         hubs = fm.loadHubs();
         Map<Integer, ArrayList<Integer>> routes =  fm.importRoutes(foldername, routeFileName);
         ArrayList<Vertex> vertexArrayList = new ArrayList<>();
@@ -94,24 +94,6 @@ public class Network extends Subject {
         return false;
     }
 
-
-    public void addHub(String hubName){
-        if(!existHub(hubName)){
-            this.graph.insertVertex(new Hub(hubName));
-            notifyObservers(null);
-        }
-    }
-
-    public Vertex<Hub> removeHub(String name){
-        Vertex<Hub> vertexToRemove = findHub(name);
-        if(vertexToRemove != null){
-            graph.removeVertex(vertexToRemove);
-            notifyObservers(null);
-            return vertexToRemove;
-        }
-        return null;
-    }
-
     public void addRoute(String firstHubName, String secondHubName, int route) throws Exception {
         if(!existRoute(firstHubName, secondHubName)){
             graph.insertEdge(findHub(firstHubName), findHub(secondHubName) ,new Route(route));
@@ -141,13 +123,13 @@ public class Network extends Subject {
 
     private List<Map.Entry<Vertex<Hub>, Integer>> sortValues(Map<Vertex<Hub>,Integer> map){
         List<Map.Entry<Vertex<Hub>, Integer>> list = new LinkedList<>(map.entrySet());
-        Collections.sort(list, (o1, o2) -> (o1.getValue()).compareTo(o2.getValue()));
+        list.sort(Map.Entry.comparingByValue());
         Collections.reverse(list);
         return list;
     }
 
     public List<Map.Entry<Vertex<Hub>, Integer>> moreCentredHubs(Map<Vertex<Hub>,Integer> map){
-        List<Map.Entry<Vertex<Hub>, Integer>> five = new LinkedList<Map.Entry<Vertex<Hub>, Integer>>();
+        List<Map.Entry<Vertex<Hub>, Integer>> five = new LinkedList<>();
         for(int i = 0; i<5; i++) {
             five.add(sortValues(map).get(i));
         }

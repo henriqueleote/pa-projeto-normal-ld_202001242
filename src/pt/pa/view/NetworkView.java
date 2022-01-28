@@ -33,9 +33,6 @@ public class NetworkView extends BorderPane implements NetworkUI{
     private Button btAddRoute;
     private Button btRemoveRoute;
     private Button btUndo;
-    private Button btAddGroupRelationship;
-    private Button btAddClassRelationship;
-    private Button btRemoveRelationship;
     private Button submit;
     private Button voltar;
     private Label lblError;
@@ -104,14 +101,11 @@ public class NetworkView extends BorderPane implements NetworkUI{
             });
         });
 
-        btUndo.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                try {
-                    controller.undo();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+        btUndo.setOnAction(actionEvent -> {
+            try {
+                controller.undo();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         });
     }
@@ -212,62 +206,33 @@ public class NetworkView extends BorderPane implements NetworkUI{
 
         btn0.setOnAction(event -> System.exit(0));
 
-        btn1.setOnAction(new EventHandler< ActionEvent >() {
-            @Override
-            public void handle(ActionEvent event) {
-                btn1Method();
-            }
-        });
+        btn1.setOnAction(event -> btn1Method());
 
-        btn2.setOnAction(new EventHandler< ActionEvent >() {
-            @Override
-            public void handle(ActionEvent event) {
-                btn2Method();
-            }
-        });
+        btn2.setOnAction(event -> btn2Method());
 
-        btn3.setOnAction(new EventHandler< ActionEvent >(){
-            @Override
-            public void handle(ActionEvent event) {
-                Stage stage = new Stage(StageStyle.DECORATED);
-                stage.initModality(Modality.APPLICATION_MODAL);
-                ChartView c = new ChartView(graph, stage);
-            }
+        btn3.setOnAction(event -> {
+            Stage stage = new Stage(StageStyle.DECORATED);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            ChartView c = new ChartView(graph, stage);
         });
 
         Dijkstra dijkstra = new Dijkstra(getGraph());
 
-        btn4.setOnAction(new EventHandler< ActionEvent >() {
-            @Override
-            public void handle(ActionEvent event) {
-                btn4Method(dijkstra);
+        btn4.setOnAction(event -> btn4Method(dijkstra));
+
+        btn5.setOnAction(event -> {
+            for (Vertex<Hub> i:dijkstra.farthestHubs().getPath()) {
+                graphView.getStylableVertex(i).setStyle("-fx-stroke: red; -fx-fill: red;");
             }
         });
 
-        btn5.setOnAction(new EventHandler< ActionEvent >() {
-            @Override
-            public void handle(ActionEvent event) {
-                for (Vertex<Hub> i:dijkstra.farthestHubs().getPath()) {
-                    graphView.getStylableVertex(i).setStyle("-fx-stroke: red; -fx-fill: red;");
-                }
+        btn6.setOnAction(event -> {
+            for (Vertex<Hub> i: getGraph().vertices()) {
+                graphView.getStylableVertex(i).setStyle("");
             }
         });
 
-        btn6.setOnAction(new EventHandler< ActionEvent >() {
-            @Override
-            public void handle(ActionEvent event) {
-                for (Vertex<Hub> i: getGraph().vertices()) {
-                    graphView.getStylableVertex(i).setStyle("");
-                }
-            }
-        });
-
-        btn7.setOnAction(new EventHandler< ActionEvent >() {
-            @Override
-            public void handle(ActionEvent event) {
-                btUndo.fire();
-            }
-        });
+        btn7.setOnAction(event -> btUndo.fire());
 
 
         /* ADD PERSON CONTROLS */
@@ -280,8 +245,8 @@ public class NetworkView extends BorderPane implements NetworkUI{
         /* STATS */
 
         lblCost = new Label("Cost");
-        lblNumberOfHubs = new Label("Number of Hubs: " + String.valueOf(graph.size()));
-        lblNumberOfRoutes = new Label("Number of Routes: " + String.valueOf(getGraph().numEdges()));
+        lblNumberOfHubs = new Label("Number of Hubs: " + graph.size());
+        lblNumberOfRoutes = new Label("Number of Routes: " + getGraph().numEdges());
         lblCost.setVisible(false);
         VBox statsPane = new VBox(lblNumberOfHubs, lblNumberOfRoutes, lblCost);
         statsPane.setSpacing(10);
@@ -328,11 +293,6 @@ public class NetworkView extends BorderPane implements NetworkUI{
 
         txtPersonName.setPrefColumnCount(12);
 
-
-        btAddClassRelationship = new Button("Add Class");
-        btAddGroupRelationship = new Button("Add Group");
-        HBox addRel = new HBox(btAddClassRelationship, btAddGroupRelationship);
-        btRemoveRelationship = new Button("Remove");
     }
 
     private GridPane personControls(Button btn1, Button btn2, Button btn3, Button btn4, Button btn5, Button btn6, Button btn7, Button btn8, Button btn9, Button btn0) {
@@ -378,29 +338,21 @@ public class NetworkView extends BorderPane implements NetworkUI{
         txtFields(root1, title);
 
 
-        submit.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                try {
-                    DijkstraResult<Hub> dijkstraResult = dijkstra.calculateShortestPathFromOrigin(graph.findHub(txtOriginHubName.getText()), graph.findHub(txtDestinationHubName.getText()));
-                    for (Vertex<Hub> i:dijkstraResult.getPath()) {
-                        graphView.getStylableVertex(i).setStyle("-fx-stroke: red; -fx-fill: red;");
-                    }
-                    lblCost.setVisible(true);
-                    lblCost.setTextFill(Color.DARKGREEN);
-                    lblCost.setText("Custo: " + String.valueOf(dijkstraResult.getCost()));
-                } catch (Exception e) {
-                    e.printStackTrace();
+        submit.setOnAction(event -> {
+            try {
+                DijkstraResult<Hub> dijkstraResult = dijkstra.calculateShortestPathFromOrigin(graph.findHub(txtOriginHubName.getText()), graph.findHub(txtDestinationHubName.getText()));
+                for (Vertex<Hub> i:dijkstraResult.getPath()) {
+                    graphView.getStylableVertex(i).setStyle("-fx-stroke: red; -fx-fill: red;");
                 }
-                stage1.close();
+                lblCost.setVisible(true);
+                lblCost.setTextFill(Color.DARKGREEN);
+                lblCost.setText("Custo: " + String.valueOf(dijkstraResult.getCost()));
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+            stage1.close();
         });
-        voltar.setOnAction(new EventHandler< ActionEvent >() {
-            @Override
-            public void handle(ActionEvent event) {
-                stage1.close();
-            }
-        });
+        voltar.setOnAction(event -> stage1.close());
 
 
         scene = new Scene(root1, 400, 260);
@@ -418,23 +370,15 @@ public class NetworkView extends BorderPane implements NetworkUI{
         Text title = new Text("Remover Caminho");
         txtFields(root1, title);
 
-        submit.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                try {
-                    btRemoveRoute.fire();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                stage1.close();
+        submit.setOnAction(event -> {
+            try {
+                btRemoveRoute.fire();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+            stage1.close();
         });
-        voltar.setOnAction(new EventHandler< ActionEvent >() {
-            @Override
-            public void handle(ActionEvent event) {
-                stage1.close();
-            }
-        });
+        voltar.setOnAction(event -> stage1.close());
 
         scene = new Scene(root1, 400, 260);
         stage1.setTitle("Remover Caminho");
@@ -500,23 +444,15 @@ public class NetworkView extends BorderPane implements NetworkUI{
 
         root1.getChildren().addAll(title,caminho,txtRouteValue,ponto1Lbl,txtOriginHubName,ponto2Lbl,txtDestinationHubName,submit,voltar);
 
-        submit.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                try {
-                    btAddRoute.fire();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                stage1.close();
+        submit.setOnAction(event -> {
+            try {
+                btAddRoute.fire();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+            stage1.close();
         });
-        voltar.setOnAction(new EventHandler< ActionEvent >() {
-            @Override
-            public void handle(ActionEvent event) {
-                stage1.close();
-            }
-        });
+        voltar.setOnAction(event -> stage1.close());
 
         scene = new Scene(root1, 400, 330);
         stage1.setTitle("Adicionar Caminho");
