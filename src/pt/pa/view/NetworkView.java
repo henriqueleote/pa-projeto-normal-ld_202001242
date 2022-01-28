@@ -393,7 +393,7 @@ public class NetworkView extends BorderPane implements NetworkUI{
         stage1.initModality(Modality.APPLICATION_MODAL);
 
         Text title = new Text("Adicionar caminho");
-        Text caminho = new Text("Caminho");
+        Text caminho = new Text("Distância");
         Text ponto1Lbl = new Text("Ponto 1");
         Text ponto2Lbl = new Text("Ponto 2");
         submit = new Button("Submeter");
