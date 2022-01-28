@@ -18,9 +18,7 @@ public class NetworkController {
         this.cart = cart;
         this.view = view;
         commandmanager= new CommandManager();
-
         this.view.setTriggers(this);
-
         this.cart.addObserver(this.view);
     }
 
@@ -31,14 +29,13 @@ public class NetworkController {
             String destination = view.getDestinationHubName();
             int routeValue = view.getRouteValue();
             if(origin.isEmpty()){
-                this.view.displayError("The origin Hub connot be empty");
+                this.view.displayError("The origin Hub cannot be empty");
                 return;
             }
             if(destination.isEmpty()){
-                this.view.displayError("The destination Hub connot be empty");
+                this.view.displayError("The destination Hub cannot be empty");
                 return;
             }
-
 
             Command c = new AddCommand(cart,origin,destination,routeValue);
             commandmanager.executeCommand(c);
@@ -54,7 +51,7 @@ public class NetworkController {
             String origin = view.getOriginHubName();
             String destination = view.getDestinationHubName();
             if(origin.isEmpty()){
-                this.view.displayError("The name connot be empty");
+                this.view.displayError("The name cannot be empty");
                 return;
             }
 
@@ -72,7 +69,6 @@ public class NetworkController {
         commandmanager.undo();
         System.out.println("UNDO");
     }
-
 
     public String showAll() {
         String str = cart.toString();
