@@ -215,122 +215,14 @@ public class NetworkView extends BorderPane implements NetworkUI{
         btn1.setOnAction(new EventHandler< ActionEvent >() {
             @Override
             public void handle(ActionEvent event) {
-                StackPane root1 = new StackPane();
-                Stage stage1 = new Stage();
-                stage1.initModality(Modality.APPLICATION_MODAL);
-
-                Text title = new Text("Adicionar caminho");
-                Text caminho = new Text("Caminho");
-                Text ponto1Lbl = new Text("Ponto 1");
-                Text ponto2Lbl = new Text("Ponto 2");
-                submit = new Button("Submeter");
-                voltar = new Button("Voltar");
-
-                txtOriginHubName = new TextField();
-                txtDestinationHubName = new TextField();
-                txtRouteValue = new TextField();
-                txtOriginHubName.setMaxWidth(200);
-                txtDestinationHubName.setMaxWidth(200);
-                txtRouteValue.setMaxWidth(200);
-
-                title.setFont(Font.font("Arial", FontWeight.BOLD,20));
-                title.setTranslateX(0);
-                title.setTranslateY(-120);
-
-                caminho.setTranslateX(-75);
-                caminho.setTranslateY(-70);
-                txtRouteValue.setTranslateX(0);
-                txtRouteValue.setTranslateY(-40);
-
-                ponto1Lbl.setTranslateX(-75);
-                ponto1Lbl.setTranslateY(-10);
-                txtOriginHubName.setTranslateX(0);
-                txtOriginHubName.setTranslateY(20);
-
-                ponto2Lbl.setTranslateX(-75);
-                ponto2Lbl.setTranslateY(50);
-                txtDestinationHubName.setTranslateX(0);
-                txtDestinationHubName.setTranslateY(80);
-
-                voltar.setTranslateX(-60);
-                voltar.setTranslateY(120);
-                submit.setTranslateX(60);
-                submit.setTranslateY(120);
-
-                voltar.setBackground(new Background((new BackgroundFill(Color.RED, new CornerRadii(10), Insets.EMPTY))));
-                voltar.setMaxWidth(80);
-                voltar.setTextFill(Color.WHITE);
-                voltar.setFocusTraversable(false);
-
-
-                submit.setBackground(new Background((new BackgroundFill(Color.BLUE, new CornerRadii(10), Insets.EMPTY))));
-                submit.setMaxWidth(80);
-                submit.setTextFill(Color.WHITE);
-                submit.setFocusTraversable(false);
-
-
-                root1.getChildren().addAll(title,caminho,txtRouteValue,ponto1Lbl,txtOriginHubName,ponto2Lbl,txtDestinationHubName,submit,voltar);
-
-                submit.setOnAction(new EventHandler<ActionEvent>() {
-                    @Override
-                    public void handle(ActionEvent event) {
-                        try {
-                            btAddRoute.fire();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        stage1.close();
-                    }
-                });
-                voltar.setOnAction(new EventHandler< ActionEvent >() {
-                    @Override
-                    public void handle(ActionEvent event) {
-                        stage1.close();
-                    }
-                });
-
-                scene = new Scene(root1, 400, 330);
-                stage1.setTitle("Adicionar Caminho");
-                stage1.setResizable(false);
-                stage1.setScene(scene);
-                stage1.show();
+                btn1Method();
             }
         });
 
         btn2.setOnAction(new EventHandler< ActionEvent >() {
             @Override
             public void handle(ActionEvent event) {
-
-                StackPane root1 = new StackPane();
-                Stage stage1 = new Stage();
-                stage1.initModality(Modality.APPLICATION_MODAL);
-
-                Text title = new Text("Remover Caminho");
-                txtFields(root1, title);
-
-                submit.setOnAction(new EventHandler<ActionEvent>() {
-                    @Override
-                    public void handle(ActionEvent event) {
-                        try {
-                            btRemoveRoute.fire();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        stage1.close();
-                    }
-                });
-                voltar.setOnAction(new EventHandler< ActionEvent >() {
-                    @Override
-                    public void handle(ActionEvent event) {
-                        stage1.close();
-                    }
-                });
-
-                scene = new Scene(root1, 400, 260);
-                stage1.setTitle("Remover Caminho");
-                stage1.setResizable(false);
-                stage1.setScene(scene);
-                stage1.show();
+                btn2Method();
             }
         });
 
@@ -348,44 +240,7 @@ public class NetworkView extends BorderPane implements NetworkUI{
         btn4.setOnAction(new EventHandler< ActionEvent >() {
             @Override
             public void handle(ActionEvent event) {
-                StackPane root1 = new StackPane();
-                Stage stage1 = new Stage();
-                stage1.initModality(Modality.APPLICATION_MODAL);
-
-                Text title = new Text("Curta Distância");
-                txtFields(root1, title);
-
-
-                submit.setOnAction(new EventHandler<ActionEvent>() {
-                    @Override
-                    public void handle(ActionEvent event) {
-                        try {
-                            DijkstraResult<Hub> dijkstraResult = dijkstra.calculateShortestPathFromOrigin(graph.findHub(txtOriginHubName.getText()), graph.findHub(txtDestinationHubName.getText()));
-                            for (Vertex<Hub> i:dijkstraResult.getPath()) {
-                                graphView.getStylableVertex(i).setStyle("-fx-stroke: red; -fx-fill: red;");
-                            }
-                            lblCost.setVisible(true);
-                            lblCost.setTextFill(Color.DARKGREEN);
-                            lblCost.setText("Custo: " + String.valueOf(dijkstraResult.getCost()));
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        stage1.close();
-                    }
-                });
-                voltar.setOnAction(new EventHandler< ActionEvent >() {
-                    @Override
-                    public void handle(ActionEvent event) {
-                        stage1.close();
-                    }
-                });
-
-
-                scene = new Scene(root1, 400, 260);
-                stage1.setTitle("Curta Distância");
-                stage1.setResizable(false);
-                stage1.setScene(scene);
-                stage1.show();
+                btn4Method(dijkstra);
             }
         });
 
@@ -416,57 +271,10 @@ public class NetworkView extends BorderPane implements NetworkUI{
 
 
         /* ADD PERSON CONTROLS */
-        GridPane personPane = new GridPane();
-        personPane.setAlignment(Pos.CENTER);
-        personPane.setPadding(new Insets(10,10,10,10)); // set top, right, bottom, left
-        personPane.setHgap(5);
-        personPane.setVgap(20);
-
-
-        personPane.add(btn1,1,0);
-        personPane.add(btn2,1,1);
-        personPane.add(btn3,1,2);
-        personPane.add(btn4,1,3);
-        personPane.add(btn5,1,4);
-        personPane.add(btn6,1,5);
-        personPane.add(btn7,1,6);
-        personPane.add(btn8,1,7);
-        personPane.add(btn9,1,8);
-        personPane.add(btn0,1,9);
-
-        btn8.setDisable(true);
-
-        txtPersonName = new TextField("");
-        cbRoles = new ComboBox<>();
-        cbRoles.getItems().addAll("STUDENT", "TEACHER");
-        cbRoles.setMaxWidth(Double.MAX_VALUE); //hack to hgrow
-
-        txtPersonName.setPrefColumnCount(10);
-
-        btAddRoute = new Button("Add");
-        btRemoveRoute = new Button("Remove");
-        btUndo = new Button("Undo");
+        GridPane personPane = personControls(btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btn0);
 
         /* Relationship Controls */
-        GridPane relationPane = new GridPane();
-        relationPane.setAlignment(Pos.CENTER);
-        relationPane.setHgap(5);
-        relationPane.setVgap(5);
-        relationPane.setPadding(new Insets(10,10,10,10)); // set top, right, bottom, left
-
-        txtRelationshipDescription = new TextField("");
-        cbPersonId1 = new ComboBox<>();
-        cbPersonId1.setMaxWidth(Double.MAX_VALUE); //hack to hgrow
-        cbPersonId2 = new ComboBox<>();
-        cbPersonId2.setMaxWidth(Double.MAX_VALUE); //hack to hgrow
-
-        txtPersonName.setPrefColumnCount(12);
-
-
-        btAddClassRelationship = new Button("Add Class");
-        btAddGroupRelationship = new Button("Add Group");
-        HBox addRel = new HBox(btAddClassRelationship, btAddGroupRelationship);
-        btRemoveRelationship = new Button("Remove");
+        RelationshipControls();
 
 
         /* STATS */
@@ -503,6 +311,218 @@ public class NetworkView extends BorderPane implements NetworkUI{
         panel.setFillWidth(true);
 
         return panel;
+    }
+
+    private void RelationshipControls() {
+        GridPane relationPane = new GridPane();
+        relationPane.setAlignment(Pos.CENTER);
+        relationPane.setHgap(5);
+        relationPane.setVgap(5);
+        relationPane.setPadding(new Insets(10,10,10,10)); // set top, right, bottom, left
+
+        txtRelationshipDescription = new TextField("");
+        cbPersonId1 = new ComboBox<>();
+        cbPersonId1.setMaxWidth(Double.MAX_VALUE); //hack to hgrow
+        cbPersonId2 = new ComboBox<>();
+        cbPersonId2.setMaxWidth(Double.MAX_VALUE); //hack to hgrow
+
+        txtPersonName.setPrefColumnCount(12);
+
+
+        btAddClassRelationship = new Button("Add Class");
+        btAddGroupRelationship = new Button("Add Group");
+        HBox addRel = new HBox(btAddClassRelationship, btAddGroupRelationship);
+        btRemoveRelationship = new Button("Remove");
+    }
+
+    private GridPane personControls(Button btn1, Button btn2, Button btn3, Button btn4, Button btn5, Button btn6, Button btn7, Button btn8, Button btn9, Button btn0) {
+        GridPane personPane = new GridPane();
+        personPane.setAlignment(Pos.CENTER);
+        personPane.setPadding(new Insets(10,10,10,10)); // set top, right, bottom, left
+        personPane.setHgap(5);
+        personPane.setVgap(20);
+
+
+        personPane.add(btn1,1,0);
+        personPane.add(btn2,1,1);
+        personPane.add(btn3,1,2);
+        personPane.add(btn4,1,3);
+        personPane.add(btn5,1,4);
+        personPane.add(btn6,1,5);
+        personPane.add(btn7,1,6);
+        personPane.add(btn8,1,7);
+        personPane.add(btn9,1,8);
+        personPane.add(btn0,1,9);
+
+        btn8.setDisable(true);
+
+        txtPersonName = new TextField("");
+        cbRoles = new ComboBox<>();
+        cbRoles.getItems().addAll("STUDENT", "TEACHER");
+        cbRoles.setMaxWidth(Double.MAX_VALUE); //hack to hgrow
+
+        txtPersonName.setPrefColumnCount(10);
+
+        btAddRoute = new Button("Add");
+        btRemoveRoute = new Button("Remove");
+        btUndo = new Button("Undo");
+        return personPane;
+    }
+
+    private void btn4Method(Dijkstra dijkstra) {
+        StackPane root1 = new StackPane();
+        Stage stage1 = new Stage();
+        stage1.initModality(Modality.APPLICATION_MODAL);
+
+        Text title = new Text("Curta Distância");
+        txtFields(root1, title);
+
+
+        submit.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                try {
+                    DijkstraResult<Hub> dijkstraResult = dijkstra.calculateShortestPathFromOrigin(graph.findHub(txtOriginHubName.getText()), graph.findHub(txtDestinationHubName.getText()));
+                    for (Vertex<Hub> i:dijkstraResult.getPath()) {
+                        graphView.getStylableVertex(i).setStyle("-fx-stroke: red; -fx-fill: red;");
+                    }
+                    lblCost.setVisible(true);
+                    lblCost.setTextFill(Color.DARKGREEN);
+                    lblCost.setText("Custo: " + String.valueOf(dijkstraResult.getCost()));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                stage1.close();
+            }
+        });
+        voltar.setOnAction(new EventHandler< ActionEvent >() {
+            @Override
+            public void handle(ActionEvent event) {
+                stage1.close();
+            }
+        });
+
+
+        scene = new Scene(root1, 400, 260);
+        stage1.setTitle("Curta Distância");
+        stage1.setResizable(false);
+        stage1.setScene(scene);
+        stage1.show();
+    }
+
+    private void btn2Method() {
+        StackPane root1 = new StackPane();
+        Stage stage1 = new Stage();
+        stage1.initModality(Modality.APPLICATION_MODAL);
+
+        Text title = new Text("Remover Caminho");
+        txtFields(root1, title);
+
+        submit.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                try {
+                    btRemoveRoute.fire();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                stage1.close();
+            }
+        });
+        voltar.setOnAction(new EventHandler< ActionEvent >() {
+            @Override
+            public void handle(ActionEvent event) {
+                stage1.close();
+            }
+        });
+
+        scene = new Scene(root1, 400, 260);
+        stage1.setTitle("Remover Caminho");
+        stage1.setResizable(false);
+        stage1.setScene(scene);
+        stage1.show();
+    }
+
+    private void btn1Method() {
+        StackPane root1 = new StackPane();
+        Stage stage1 = new Stage();
+        stage1.initModality(Modality.APPLICATION_MODAL);
+
+        Text title = new Text("Adicionar caminho");
+        Text caminho = new Text("Caminho");
+        Text ponto1Lbl = new Text("Ponto 1");
+        Text ponto2Lbl = new Text("Ponto 2");
+        submit = new Button("Submeter");
+        voltar = new Button("Voltar");
+
+        txtOriginHubName = new TextField();
+        txtDestinationHubName = new TextField();
+        txtRouteValue = new TextField();
+        txtOriginHubName.setMaxWidth(200);
+        txtDestinationHubName.setMaxWidth(200);
+        txtRouteValue.setMaxWidth(200);
+
+        title.setFont(Font.font("Arial", FontWeight.BOLD,20));
+        title.setTranslateX(0);
+        title.setTranslateY(-120);
+
+        caminho.setTranslateX(-75);
+        caminho.setTranslateY(-70);
+        txtRouteValue.setTranslateX(0);
+        txtRouteValue.setTranslateY(-40);
+
+        ponto1Lbl.setTranslateX(-75);
+        ponto1Lbl.setTranslateY(-10);
+        txtOriginHubName.setTranslateX(0);
+        txtOriginHubName.setTranslateY(20);
+
+        ponto2Lbl.setTranslateX(-75);
+        ponto2Lbl.setTranslateY(50);
+        txtDestinationHubName.setTranslateX(0);
+        txtDestinationHubName.setTranslateY(80);
+
+        voltar.setTranslateX(-60);
+        voltar.setTranslateY(120);
+        submit.setTranslateX(60);
+        submit.setTranslateY(120);
+
+        voltar.setBackground(new Background((new BackgroundFill(Color.RED, new CornerRadii(10), Insets.EMPTY))));
+        voltar.setMaxWidth(80);
+        voltar.setTextFill(Color.WHITE);
+        voltar.setFocusTraversable(false);
+
+
+        submit.setBackground(new Background((new BackgroundFill(Color.BLUE, new CornerRadii(10), Insets.EMPTY))));
+        submit.setMaxWidth(80);
+        submit.setTextFill(Color.WHITE);
+        submit.setFocusTraversable(false);
+
+
+        root1.getChildren().addAll(title,caminho,txtRouteValue,ponto1Lbl,txtOriginHubName,ponto2Lbl,txtDestinationHubName,submit,voltar);
+
+        submit.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                try {
+                    btAddRoute.fire();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                stage1.close();
+            }
+        });
+        voltar.setOnAction(new EventHandler< ActionEvent >() {
+            @Override
+            public void handle(ActionEvent event) {
+                stage1.close();
+            }
+        });
+
+        scene = new Scene(root1, 400, 330);
+        stage1.setTitle("Adicionar Caminho");
+        stage1.setResizable(false);
+        stage1.setScene(scene);
+        stage1.show();
     }
 
     private void txtFields(StackPane root1, Text title) {
@@ -579,10 +599,10 @@ public class NetworkView extends BorderPane implements NetworkUI{
             }
         });
 
-        Text x = new Text("Cooredenada X");
+        Text x = new Text("Coordenada X");
         TextField txtX = new TextField();
 
-        Text y = new Text("Cooredenada Y");
+        Text y = new Text("Coordenada Y");
         TextField txtY = new TextField();
 
         root1.setAlignment(Pos.CENTER);
