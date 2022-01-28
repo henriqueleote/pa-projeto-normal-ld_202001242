@@ -24,14 +24,26 @@ public class Dijkstra {
         Map<Vertex<Hub>, Double> minDist = new HashMap<>();
         Map<Vertex<Hub>, Vertex<Hub>> predecessors = new HashMap<>();
         List<Vertex<Hub>> unvisited = new ArrayList<>();
-        for(Vertex<Hub> v : graph.vertices()){
-            unvisited.add(v);
-            predecessors.put(v, null);
-            minDist.put(v, Double.MAX_VALUE);
+        setup(origin, minDist, predecessors, unvisited);
+        makePath(minDist, predecessors, unvisited);
+        Double cost = minDist.get(dest);
+        if(cost == Double.MAX_VALUE)
+        {
+            return new DijkstraResult<>(cost, null);
         }
+        List<Vertex<Hub>> path = new ArrayList<>();
+        Vertex<Hub> current = dest;
+        while(current != origin) {
 
-        minDist.put(origin, 0.0);
+            path.add(current);
+            current = predecessors.get(current);
+        }
+        path.add(origin);
+        Collections.reverse(path);
+        return new DijkstraResult<>(cost, path);
+    }
 
+    private void makePath(Map<Vertex<Hub>, Double> minDist, Map<Vertex<Hub>, Vertex<Hub>> predecessors, List<Vertex<Hub>> unvisited) {
         while(!unvisited.isEmpty()){
             Vertex<Hub> currentV = findMinCostVertex(minDist, unvisited);
             for (Edge<Route, Hub> e : graph.incidentEdges(currentV)) {
@@ -51,26 +63,15 @@ public class Dijkstra {
             }
             unvisited.remove(currentV);
         }
-        Double cost = minDist.get(dest);
-        if(cost == Double.MAX_VALUE)
-        {
-            return new DijkstraResult<>(cost, null);
+    }
+
+    private void setup(Vertex<Hub> origin, Map<Vertex<Hub>, Double> minDist, Map<Vertex<Hub>, Vertex<Hub>> predecessors, List<Vertex<Hub>> unvisited) {
+        for(Vertex<Hub> v : graph.vertices()){
+            unvisited.add(v);
+            predecessors.put(v, null);
+            minDist.put(v, Double.MAX_VALUE);
         }
-
-        List<Vertex<Hub>> path = new ArrayList<>();
-
-        Vertex<Hub> current = dest;
-        while(current != origin) {
-
-            path.add(current);
-            current = predecessors.get(current);
-        }
-
-        path.add(origin);
-
-        Collections.reverse(path);
-
-        return new DijkstraResult<>(cost, path);
+        minDist.put(origin, 0.0);
     }
 
 
