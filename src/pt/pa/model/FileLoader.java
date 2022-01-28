@@ -45,6 +45,10 @@ public class FileLoader implements Serializable {
 
     public void importWeight(String foldername){
         String file = foldername + "weight.txt";
+        setWeightList(file, hubList);
+    }
+
+    public static void setWeightList(String file, ArrayList<Hub> hubList) {
         ArrayList<Integer> weightList = new ArrayList<>();
         String aux = "";
         int i = 0;

@@ -27,7 +27,6 @@ public class Network extends Subject {
     private void inicializeGraph(String foldername, String routeFileName){
         hubs = fm.loadHubs();
         Map<Integer, ArrayList<Integer>> routes =  fm.importRoutes(foldername, routeFileName);
-
         ArrayList<Vertex> vertexArrayList = new ArrayList<>();
         for(int i = 0; i < hubs.size(); i++) {
             Vertex<Hub> v = graph.insertVertex(hubs.get(i));
